@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html class="listHtml">
+<head>
+ <meta charset="UTF-8">
+ <title>审核回复语</title>
+ <link rel="stylesheet" type="text/css" href="../themes/default/easyui.css">
+ <link rel="stylesheet" type="text/css" href="../themes/icon.css">
+ <link rel="stylesheet" type="text/css" href="../css/list.css">
+ <link rel="stylesheet" type="text/css" href="../css/button.css">
+ <!-- <link rel="stylesheet" type="text/css" href="../css/webuploader.css"> -->
+ <script type="text/javascript" src="../js/jquery.min.js"></script>
+ <script type="text/javascript" src="../js/jquery.easyui.min.js"></script>
+ <style>
+
+.button{
+	margin-right:3px;
+	margin-left:3px;
+}
+
+</style>
+</head>
+<body>
+    <div id="body" region="center" style="padding-top:10px; width: 900px">
+        <h3>活动后台审核回复语</h3>
+        <div style="margin-top: 30px; margin-left: 50px">
+		    <div>
+				<a id='addSubmit' href="javascript:void(0)" class="button  button-royal button-rounded" style="height: 30px; line-height: 30px; font-size: 14px; padding: 0 30px; margin-right: 10px; margin-left: 10px; margin-bottom: 40px">添加</a>
+		    </div>
+        </div>
+
+		<!-- 新增回复语 -->
+        <div id="addContent" class="easyui-dialog dlg" title="请添加审核回复语" data-options="iconCls:'icon-edit',modal: true,width:'400'" style="display:none;">
+            <form id="checkContent">
+                <p style="text-align: left;line-height: 45px;">
+                    <span>
+                        <input type="text" name="content"  style="width: 300px;" >
+                    </span>
+                </p>
+                <p class='mt10' style="margin-top:25px;">
+                    <a id='btnSub' href="javascript:void(0)" class="easyui-linkbutton " iconCls="icon-ok">保存</a>&nbsp;&nbsp;
+                    <a id='btnCancel' href="javascript:void(0)" class="easyui-linkbutton " iconCls="icon-cancel">取消</a>
+                </p>
+            </form>
+        </div>
+        <table id="tableListOn" class="easyui-datagrid" style="width: 450px;"></table>
+        <div id="listData">
+        	
+        </div>
+        <!-- 编辑回复语 -->
+        <div id="editContent" class="easyui-dialog dlg" title="请编辑审核回复语" data-options="iconCls:'icon-edit',modal: true,width:'400'" style="display:none;">
+        	<!-- 编辑回复语 -->
+            <form id="editContents">
+            <input name="contentid" type="hidden" id="checkContentID" value=""/>
+                <p style="text-align: left;line-height: 45px;">
+                    <span><input type="text" name="contents"  style="width: 300px;" id="edit_content"></span>
+                </p>
+                <p class='mt10' style="margin-top:25px;">
+                    <a id='editSub' href="javascript:void(0)" class="easyui-linkbutton " iconCls="icon-ok">保存</a>&nbsp;&nbsp;
+                    <a id='editCancel' href="javascript:void(0)" class="easyui-linkbutton " iconCls="icon-cancel">取消</a>
+                </p>
+            </form>
+        </div>
+    </div>
+    <div id="tipDlg" class="easyui-dialog dlg" title="提示" data-options="iconCls:'icon-map',modal: true,width:200">  
+        <div>
+            <p class='dlgLine tip_cont'>操作成功</p>
+        </div> 
+    </div>
+    <div id="tipDlgError" class="easyui-dialog dlg" title="提示" data-options="iconCls:'icon-map',modal: true,width:200">  
+        <div>
+            <p class='dlgLine tip_cont'>操作失败</p>
+        </div> 
+    </div>
+    <div id="tipDlgErrorContent" class="easyui-dialog dlg" title="提示" data-options="iconCls:'icon-map',modal: true,width:200">  
+        <div>
+            <p class='dlgLine tip_cont'>活动公告必须满足20个字数限制</p>
+        </div> 
+    </div>
+    <script type="text/javascript" src="../js/add.js"></script>
+    <script>
+        var QueryParamT = 1 ; 
+    </script>
+<body>
+</html>
