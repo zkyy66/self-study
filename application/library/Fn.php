@@ -834,11 +834,19 @@ class Fn {
 //         return @mysql_escape_string($str);
     }
     
+    /**
+     * @param $string
+     * @return mixed
+     */
     public static function nl2br($string)
     {
         return str_replace(array("\r\n", "\r", "\n"), "<br/>", $string);
     }
     
+    /**
+     * @param $string
+     * @return mixed
+     */
     public static function br2nl($string){
         return preg_replace('/<br\\s*?\/??>/i', chr(13), $string);
     }
