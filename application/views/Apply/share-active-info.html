@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html>
+
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>活动</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="format-detection" content="telephone=no"/>
+
+    <meta name="apple-mobile-web-app-capable" content="yes"/>
+    <meta name="apple-mobile-web-app-status-bar-style" content="black"/>
+    <meta name="format-detection" content="telephone=no,email=no,adress=no">
+    <link rel="stylesheet" href="/html/src/font/iconfont.css">
+    <link rel="stylesheet" href="/html/src/scss/css/share-active-info.css">
+    <style type="text/css">
+        /* 半透明的遮罩层 */
+        #overlay {
+            background: #000;
+            filter: alpha(opacity=50); /* IE的透明度 */
+            opacity: 0.5;  /* 透明度 */
+            display: none;
+            position: absolute;
+            top: 0px;
+            left: 0px;
+            width: 100%;
+            height: 100%;
+            z-index: 100; /* 此处的图层要大于页面 */
+            display:none;
+        }
+    </style>
+
+    <script>
+
+        (function (win, lib) {
+
+            var doc = win.document;
+            var docEl = doc.documentElement;
+            var metaEl = doc.querySelector('meta[name="viewport"]');
+            var flexibleEl = doc.querySelector('meta[name="flexible"]');
+            var dpr = 0;
+            var scale = 0;
+            var tempScale = 0;
+            var tid;
+            var flexible = lib.flexible || (lib.flexible = {});
+
+            if (flexibleEl) {
+                var content = flexibleEl.getAttribute('content');
+                if (content) {
+                    var initialDpr = content.match(/initial\-dpr=([\d\.]+)/);
+                    var maximumDpr = content.match(/maximum\-dpr=([\d\.]+)/);
+                    if (initialDpr) {
+                        dpr = parseFloat(initialDpr[1]);
+                        scale = parseFloat((1 / dpr).toFixed(2));
+                    }
+                    if (maximumDpr) {
+                        dpr = parseFloat(maximumDpr[1]);
+                        scale = parseFloat((1 / dpr).toFixed(2));
+                    }
+                }
+            }
+
+            if (!dpr && !scale) {
+                var isAndroid = win.navigator.appVersion.match(/android/gi);
+                var isIPhone = win.navigator.appVersion.match(/iphone/gi);
+                var devicePixelRatio = win.devicePixelRatio;
+
+                // 对于2和3的屏，用2倍的方案，其余的用1倍方案
+                if (devicePixelRatio >= 3 && (!dpr || dpr >= 3)) {
+                    dpr = 3;
+                } else if (devicePixelRatio >= 2 && (!dpr || dpr >= 2)) {
+                    dpr = 2;
+                } else {
+                    dpr = 1;
+                }
+
+                scale = 1 / dpr;
+            }
+
+            docEl.setAttribute('data-dpr', dpr);
+
+
+            metaEl = doc.createElement('meta');
+            metaEl.setAttribute('name', 'viewport');
+            metaEl.setAttribute('content', 'width=device-width, initial-scale=' + scale + ', maximum-scale=' + scale + ', minimum-scale=' + scale + ', user-scalable=no');
+            if (docEl.firstElementChild) {
+                docEl.firstElementChild.appendChild(metaEl);
+            } else {
+                var wrap = doc.createElement('div');
+                wrap.appendChild(metaEl);
+                doc.write(wrap.innerHTML);
+            }
+
+
+            function refreshRem() {
+                var width = docEl.getBoundingClientRect().width;
+                if (width / dpr > 540) {
+                    width = 540 * dpr;
+                }
+                var rem = width / 10;
+
+                docEl.style.fontSize = rem + 'px';
+                flexible.rem = win.rem = rem;
+            }
+
+            win.addEventListener('resize', function () {
+                clearTimeout(tid);
+                tid = setTimeout(refreshRem, 300);
+            }, false);
+            win.addEventListener('pageshow', function (e) {
+                if (e.persisted) {
+                    clearTimeout(tid);
+                    tid = setTimeout(refreshRem, 300);
+                }
+            }, false);
+
+            if (doc.readyState === 'complete') {
+                doc.body.style.fontSize = 12 * dpr + 'px';
+            } else {
+                doc.addEventListener('DOMContentLoaded', function (e) {
+                    doc.body.style.fontSize = 12 * dpr + 'px';
+                }, false);
+            }
+
+
+            refreshRem();
+
+        })(window, window['lib'] || (window['lib'] = {}));
+    </script>
+</head>
+<body id="app">
+<div class="content">
+    <?php
+        if ($info) {
+    ?>
+    <div class="active-info share-active-info">
+        <div class="active-logo-poster" style=" background-image: url(<?php echo $info['img'];?>);background-repeat: no-repeat;background-size: cover;background-position: center;"></div>
+        <div class="active-base-info">
+            <h5 class="active-title">
+                <?php echo $info['title'];?>
+
+            </h5>
+            <p class="active-icon">
+			<span>
+                <?php
+                    switch($info['type']) {
+                        case "1":
+                            echo "兴趣";
+                            break;
+                        case "2":
+                            echo "户外";
+                            break;
+                        case "3":
+                            echo "展出";
+                            break;
+                        case "4":
+                            echo "演出";
+                            break;
+                        case "5":
+                            echo "会议";
+                            break;
+                        case "6":
+                            echo "运动";
+                            break;
+                        case "7":
+                            echo "讲座沙龙";
+                            break;
+                        default:
+                            echo "娱乐";
+                            break;
+                    }
+                  ?>
+				  </span>
+                <span>
+
+                    <?php
+                        if ($info['switch_status'] & 2) {
+                            echo "审核";
+                        } else {
+                            echo "开放";
+                        }
+                    ?>
+                </span>
+                <span class="right-icon">
+                    <?php
+                        if (0.00 == $info['price'] || 0 == $info['price']) {
+                            echo "免费";
+                        } else {
+                            echo floatval($info['price']).'元/人';
+                        }
+                    ?>
+                </span>
+            </p>
+        </div>
+        <div class="ac-info">
+            <div class="info">
+
+                <div class="ac-info-content">
+                    <h5><span></span>活动描述</h5>
+                    <div class="active-intro-content showContent">
+                        <?php echo $info['description'];?>
+                    </div>
+                    <div class="active-intro-content">
+                        <?php
+                            if (!empty($info['images'])) {
+                                foreach ($info['images'] as $val) {
+                                    echo "<img src=".$val['url'].">";
+                                }
+                            }
+
+                        ?>
+                    </div>
+                </div>
+
+                <!--基本信息-->
+                <div class="base-info">
+                    <h5><span></span>基本信息</h5>
+                    <div class="base-item">
+                        <span class="base-item-title">活动时间</span>
+                        <p class="base-item-content">
+                            <span>
+                                <?php
+                                    echo $acTime;
+                                ?>
+                            </span>
+                        </p>
+                    </div>
+                    <?php
+                        if ($info['switch_status'] & 1) {
+                    ?>
+                    <div class="base-item">
+                        <span class="base-item-title">报名截止</span>
+                        <p class="base-item-content">
+                            <span>
+                                <?php
+                                    echo $info['apply_end_time'][0].$info['apply_end_time_week']. $info['apply_end_time'][1];
+
+                                ?>
+                            </span>
+                        </p>
+                    </div>
+                    <?php } ?>
+                    <div class="base-item">
+                        <p class="base-item-content" style="line-height: 0.6933333333333334rem!important;">
+                            <?php echo $info['locate'];?>
+                        </p>
+                        <p class="base-item-content" style="line-height: 0.6933333333333334rem!important;margin-top: 0.26666666666666666rem">
+                            <?php echo $info['address'];?>
+                        </p>
+                        <!--<i class="icon iconfont icon-dizhi"></i>-->
+                    </div>
+                </div>
+                <!--活动发起人-->
+                <div class="ac-origin">
+                    <h5><span></span>活动发起人</h5>
+                    <dl>
+                        <dt style=" background-image: url(<?php echo $info['avatarId'];?>);background-repeat: no-repeat;background-size: cover;background-position: center;"></dt>
+                        <dd>
+                            <p><?php echo $info['username'];?></p>
+                            <span><?php echo $info['school_name'];?></span>
+                            <!-- <i class="icon">+ 关注</i> -->
+                        </dd>
+                    </dl>
+                </div>
+            </div>
+        </div>
+        <div class="margin_box"></div>
+    </div>
+    <?php } else { ?>
+    <div class="del-page">
+        <p>该活动已删除</p>
+    </div>
+    <?php } ?>
+</div>
+<div class="down_load">
+    <p>随时随地发现精彩活动<span class="down_load_btn" onclick="location.href='http://2bai.co/13953279'">下载</span>
+    </p>
+</div>
+</body>
+</html>

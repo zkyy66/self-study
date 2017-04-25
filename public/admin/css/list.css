@@ -1,0 +1,816 @@
+
+* {
+    font-size: 14px;
+    font-family: "寰蒋闆呴粦";
+    padding: 0;
+    margin: 0;
+}
+
+a {
+    text-decoration: none;
+    color: #333;
+}
+
+a:visited, a:hover {
+    color: #333;
+}
+
+ol, ul {
+    list-style: none;
+}
+
+html {
+    font-size: 14px;
+    font-family: "寰蒋闆呴粦";
+}
+
+body {
+    background: #fff;
+    
+}
+
+.listHtml{
+    width: 1500px;
+    overflow: auto;
+}
+.listHtml body{
+    width: 100%;
+}
+.listHtml .panel-fit {
+    overflow: auto;
+}
+
+.fl {
+    float: left;
+}
+
+.fr {
+    float: right;
+}
+
+.cf:after {
+    content: '.';
+    clear: both;
+    height: 0;
+    display: block;
+    overflow: hidden;
+}
+
+.addBtn {
+    line-height: 30px;
+}
+
+input {
+    width: 140px;
+    vertical-align: middle;
+    padding: 2px 2px 2px 2px;
+    border-width: 1px;
+    border-left: 1px solid #B2B2B2;
+    border-top: 1px solid #B2B2B2;
+    border-bottom: 1px solid #B2B2B2;
+    border-right: 1px solid #B2B2B2;
+}
+
+textarea {
+    padding: 0px;
+    overflow-y: auto;
+    border: 1px solid #B2B2B2;
+    resize: none;
+}
+
+input[readonly] {
+    background-color: #EBEBE4;
+}
+
+.radio {
+    margin: 0;
+    padding: 0;
+    width: 14px;
+    height: 14px;
+    border: 0px;
+}
+
+a {
+    color: Black;
+    text-decoration: none;
+}
+
+#body {
+    border: 0;
+    padding: 3px;
+    overflow: hidden;
+}
+
+#search_area {
+    margin-bottom: 3px;
+    border: 1px solid #99BBE8;
+    background-color: #EFEFEF;
+}
+
+#openOrClose {
+    display: block;
+    cursor: pointer;
+    background: url(../images/open.jpg) 0 0 no-repeat;
+    margin: 0px auto;
+    padding: 0px;
+    width: 50px;
+    height: 5px;
+    overflow: hidden;
+    text-indent: -999px;
+}
+
+.footer {
+    text-align: center;
+    color: #15428B;
+    margin: 0px;
+    padding: 0px;
+    line-height: 23px;
+    font-weight: bold;
+}
+
+.windowButton {
+    text-align: right;
+    position: absolute;
+    bottom: 10px;
+    right: 7px;
+}
+
+.showWindowButton {
+    display: block;
+    width: 100%;
+    border: 0px solid red;
+    text-align: center;
+    height: auto;
+    line-height: 30px;
+    position: absolute;
+    bottom: 10px;
+    /*right: 7px;*/
+    margin: 0 auto;
+}
+
+.showDetail {
+    color: blue;
+    text-decoration: underline;
+}
+
+.clearable {
+    background-color: #EBEBE4;
+}
+
+.my-dialog-button {
+    margin-right: 3px;
+    border: 1px solid #ccc !important;
+    padding: 0 5px 0 0 !important;
+}
+
+.my-search-button {
+    margin-right: 3px;
+    border: 1px solid #ccc !important;
+    padding: 0 5px 0 0 !important;
+    background: url('../images/button_plain_hover.png') repeat-x !important;
+}
+
+.x {
+    color: #FF0000;
+}
+
+#parent_win {
+    display: block;
+    overflow: hidden;
+}
+
+.northTitle {
+    font-family: '寰蒋闆呴粦';
+    font-size: 24px;
+    font-weight: bold;
+    height: 60px;
+    line-height: 40px;
+}
+
+.loginInfo {
+    border: 0px solid red;
+    display: block;
+    position: absolute;
+    bottom: 5px;
+    right: 10px;
+}
+
+#sysVersion {
+    border: 0px solid red;
+    height: 25px;
+    overflow: hidden;
+    position: absolute;
+    left: 10px;
+}
+
+#nowTime {
+    border: 0px solid red;
+    height: 25px;
+    width: 200px;
+    text-align: left;
+    overflow: hidden;
+    position: absolute;
+    right: 10px;
+}
+
+#conditon {
+    overflow: hidden;
+}
+
+.datagrid-body {
+    overflow: hidden;
+}
+
+.list_cntr .busy_box {
+    width: 100%;
+    height: 400px;
+    font-size: 20px;
+    line-height: 400px;
+    text-align: center;
+    display: none;
+}
+
+.list_tab li {
+    float: left;
+    width: 100px;
+    height: 30px;
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+    border: 1px solid #95B8E7;
+    line-height: 30px;
+    text-align: center;
+    border-bottom: none;
+    cursor: pointer;
+    list-style: none;
+}
+
+.list_tab .select_tab, .list_tab li:hover {
+    background: #95B8E7;
+    color: #ffffff;
+}
+
+.dlg {
+    text-align: center;
+    padding: 20px;
+}
+
+.dlg span {
+    vertical-align: middle;
+}
+
+.dlg .dlgLine {
+    padding: 20px 0;
+}
+
+.dlg input {
+    width: 100px;
+    font-size: 16px;
+    line-height: 20px;
+    padding: 2px 10px;
+    vertical-align: middle;
+}
+
+td[field='id']:hover {
+    cursor: pointer;
+
+}
+
+td[field='id'] {
+    -webkit-user-select: none;
+}
+
+.datagrid-cell {
+    font-size: 14px;
+    padding: 5px;
+}
+
+.overViewDlg {
+    width: 375px;
+    height: 672px;
+}
+
+.search_cntr {
+    margin: 10px 0;
+    padding: 10px;
+    border: 1px solid #95B8E7;
+}
+
+.search_cntr select {
+    width: 146px;
+    height: 22px;
+    border-color: #B2B2B2;
+}
+
+/*edit dinner*/
+.editCntr {
+    width: 750px;
+    margin: 0 auto;
+    font-size: 12px;
+}
+
+.editCntr h1 {
+    font-weight: normal;
+    font-style: normal;
+}
+
+.editCntr h3, .release h3 {
+    height: 38px;
+    line-height: 38px;
+    padding-left: 12px;
+    border-bottom: 1px solid #95B8E7;
+    background: #E0ECFF;
+}
+
+.editCntr p {
+    line-height: 35px;
+}
+
+.editCntr .main {
+    width: 335px;
+    padding: 10px;
+    overflow: hidden;
+}
+
+.editCntr .editImgS {
+    width: 300px;
+    overflow: hidden;
+    margin: 20px auto;
+}
+
+.editCntr .editImgS img {
+    float: left;
+    width: 97px;
+    height: 117px;
+    margin-right: 2px;
+    background: #e4e4e4;
+    margin-top: 2px;
+}
+
+.editCntr .leftMain {
+    background: #F3F3F8;
+    float: left;
+}
+
+.editCntr .leftMain .Description {
+    text-indent: 24px;
+    line-height: 25px;
+}
+
+.editCntr .editImg {
+    width: 335px;
+    height: 134px;
+    background: #CCC;
+    margin: 10px 0;
+}
+
+.editCntr .editImg img {
+    width: 100%;
+    height: 100%;
+    display: block;
+}
+
+.editCntr .rightMain {
+    float: right;
+}
+
+.editCntr .rightMain p {
+    width: 140px;
+}
+
+.editCntr .replacePoster p {
+    float: left;
+}
+
+.fileList {
+    width: 250px;
+    height: 100px;
+    overflow: hidden;
+    background: #ccc;
+}
+
+.editCntr .replacePoster a {
+    text-align: center;
+    clear: both;
+    display: block;
+    margin-left: 80px;
+    padding-top: 10px;
+}
+
+.editCntr .editContent {
+    margin-bottom: 10px;
+}
+
+.editCntr .editContent p {
+    text-indent: 2em;
+    line-height: 28px;
+}
+
+.editCntr .editContent .author {
+    text-indent: 0em;
+}
+
+.editCntr .replaceTitle input {
+    width: 250px;
+    height: 30px;
+    border: 1px solid #95B8E7;
+}
+
+.editCntr input[type="button"] {
+    width: 220px;
+    height: 30px;
+    margin-top: 20px;
+    border: 1px solid #95B8E7;
+    background: #E0ECFF;
+    border-radius: 5px;
+}
+
+.mt10 {
+    margin-top: 10px;
+}
+
+.iframeDlg iframe {
+    width: 780px;
+    height: 99%;
+}
+
+.submitCntr {
+    text-align: center;
+}
+
+.main {
+    width: 375px;
+    margin: 10px auto;
+    border: 1px solid #95B8E7;
+}
+
+.detail {
+    width: 375px;
+}
+
+.release {
+    width: 750px;
+}
+
+.placard {
+    width: 335px;
+    height: 134px;
+    overflow: hidden;
+    background: #ccc;
+}
+
+.placard img {
+    width: 100%;
+    height: 100%;
+    display: block;
+}
+
+.description {
+    text-indent: 2em;
+    line-height: 25px;
+}
+
+.releaseDiv {
+    margin: 10px 0 0 25px;
+}
+
+.releaseDiv span {
+    color: red;
+}
+
+.releaseDiv p {
+    display: inline-block;
+    width: 120px;
+}
+
+.releaseDiv input[type="text"], .releaseDiv input[type="datetime-local"] {
+    width: 320px;
+    height: 30px;
+    box-sizing: border-box;
+    border: 1px solid #95B8E7;
+}
+
+.releaseDiv input[type="number"] {
+    width: 80px;
+    height: 30px;
+    box-sizing: border-box;
+    border: 1px solid #95B8E7;
+}
+
+.releaseDiv input[type="datetime-local"].erro {
+    border: 1px solid #f00;
+}
+
+.releaseDiv .buy {
+    margin-left: 130px;
+    margin-bottom: 10px;
+}
+
+.releaseCont {
+    padding: 10px 10px 20px;
+}
+
+.releaseDiv textarea {
+    width: 320px;
+    height: 200px;
+    box-sizing: border-box;
+    border: 1px solid #95B8E7;
+    margin-left: 10px;
+    resize: none;
+}
+
+.releaseDiv .post {
+    float: left;
+}
+
+.releaseDiv .fileList {
+    margin-left: 130px;
+    width:335px;
+    height: 134px;
+    overflow: hidden;
+    background: #ccc;
+}
+
+.releaseDiv .fileList img {
+    display: block;
+    width: 100%;
+    height: 100%;
+}
+
+.releaseDiv .filePicker {
+    margin-top: 15px;
+    display: inline-block;
+}
+
+.releaseDiv .upload-btns, .submit-cntr {
+    width: 320px;
+    margin-left: 130px;
+    margin-top: 30px;
+    text-align: center;
+}
+
+.submit-cntr {
+    margin-left: 155px;
+}
+
+form input[type="submit"] {
+    margin-left: 15px;
+    width: 100px;
+    height: 28px;
+    line-height: 23px;
+    text-align: center;
+    border: 1px solid #95B8E7;
+    background: #E0ECFF;
+    border-radius: 5px;
+}
+
+.ml20 {
+    margin-left: 20px;
+}
+
+.publicBomb {
+    width: 320px;
+    height: 200px;
+    display: block;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    margin: -100px 0 0 -160px;
+    background: #fff;
+    border: 1px solid #95B8E7;
+    border-radius: 5px;
+}
+
+.publicBomb h1 {
+    width: 318px;
+    height: 38px;
+    float: left;
+    margin: 1px;
+    background: #E0ECFF;
+}
+
+.publicBomb .publicCont {
+    width: 100%;
+    height: 30px;
+    float: left;
+    text-align: center;
+    line-height: 30px;
+    margin: 35px 0 20px 0;
+}
+
+.publicBomb .publicTrue {
+    display: block;
+    clear: both;
+    width: 50px;
+    height: 30px;
+    margin: 0 auto 0;
+    background: #fff;
+    border: 1px solid #95B8E7;
+    border-radius: 5px;
+}
+
+.publicBomb h1 img {
+    float: right;
+    width: 20px;
+    height: 20px;
+    margin: 5px 5px 0 0;
+}
+
+.publicBomb h1 p {
+    font-size: 14px;
+    float: left;
+    margin-left: 15px;
+    line-height: 40px;
+}
+
+/*閰嶇疆鍚嶇墖鍙�/
+.configTitle {
+    width: 100%;
+    height: 100%;
+}
+
+.configTitle h3 {
+    width: 100%;
+    height: 38px;
+    line-height: 38px;
+    padding-left: 12px;
+    border-bottom: 1px solid #95B8E7;
+    background: #E0ECFF;
+    font-size: 14px;
+}
+
+.configUl {
+    float: left;
+    clear: both;
+    margin: 30px 0 0 25px;
+    border: 1px solid #95B8E7;
+    padding: 10px;
+}
+
+.addconfigUlCntr {
+    border-style: dashed;
+}
+
+.configUl li {
+    height: 40px;
+    clear: both;
+    margin-bottom: 15px;
+}
+
+.configUl li span {
+    display: block;
+    float: left;
+    width: 130px;
+}
+
+.configUl li span p {
+    float: left;
+    line-height: 30px;
+}
+
+p.configRed {
+    color: #F00;
+    margin-right: 5px;
+}
+
+.configUl li input {
+    display: block;
+    float: left;
+    padding-left: 5px;
+    width: 320px;
+    height: 30px;
+    border: 1px solid #95B8E7;
+}
+
+.configText {
+    width: 100px !important;
+    height: 34px !important;
+    margin: 0 0 0 15px;
+    background: #E0ECFF;
+    border: 1px solid #95B8E7;
+    border-radius: 5px;
+}
+
+.configBottom0 {
+    margin-bottom: 0 !important
+}
+
+.configAddto {
+    clear: both;
+    width: 326px;
+    float: left;
+    margin: 30px 0 0 155px;
+    height: 35px;
+    border: 1px solid #95B8E7;
+    text-align: center;
+    color: #666;
+    line-height: 35px;
+}
+
+form input[type="submit"].configSubmit {
+    display: block;
+    clear: both;
+    float: left;
+    margin-left: 155px;
+    height: 35px;
+    width: 326px;
+    margin-top: 30px;
+    background: #E0ECFF;
+    border: 1px solid #95B8E7;
+    border-radius: 5px;
+}
+
+.groupInfor {
+    line-height: 16px;
+    margin-bottom: 20px;
+}
+
+.groupInfor dd, .groupInfor dt {
+    display: inline-block;
+    vertical-align: middle;
+}
+
+.groupInfor dt {
+    width: 56px;
+    height: 49px;
+    background: url(../img/grouplogo.png) no-repeat left top;
+    overflow: hidden;
+}
+.groupInfor dt img{
+    width: 100%;
+    height: 100%;
+}
+
+.groupInfor dd {
+    padding-left: 10px;
+}
+
+.groupInfor p {
+    line-height: 20px;
+}
+
+.detail .leftMain {
+    float: none;
+    padding: 10px;
+}
+
+.detail {
+    border: 1px solid #95B8E7;
+}
+
+.detail .main {
+    border: none;
+}
+
+.editCntr i, em {
+    font-style: normal;
+}
+
+.editCntr .author {
+    color: #aeaeae;
+}
+
+.xinlv .releaseDiv {
+    margin-left: 0;
+}
+
+.xinlv textarea {
+    margin-left: 0;
+    width: 280px;
+    resize: none;
+}
+
+/* .xinlv p {
+    width: 60px;
+} */
+
+.xinlv .fileList {
+    /*margin-left: 70px;*/
+    width: 295px;
+}
+
+.xinlv input[type="text"] {
+    width:280px;
+}
+
+.xinlv .filePicker {
+    margin-left: 70px;
+}
+
+.vt {
+    vertical-align: top;
+}
+
+#muiltImg1 .fileList,
+#muiltImg2 .fileList {
+    min-height: 280px;
+    overflow-y: auto;
+}
+
+#muiltImg1 .fileList .img-item,
+#muiltImg2 .fileList .img-item {
+    float: left;
+    width: 90px;
+    height: 90px;
+    margin: 2px 1px 0;
+    background: #e4e4e4;
+}

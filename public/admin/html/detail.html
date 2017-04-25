@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html class="listHtml">
+<head>
+ <meta charset="UTF-8">
+ <title>活动详情</title>
+ <link rel="stylesheet" type="text/css" href="../themes/default/easyui.css">
+ <link rel="stylesheet" type="text/css" href="../themes/icon.css">
+ <link rel="stylesheet" type="text/css" href="../css/list.css">
+ <link rel="stylesheet" type="text/css" href="../css/button.css">
+ <link rel="stylesheet" type="text/css" href="../css/webuploader.css">
+ <script type="text/javascript" src="../js/jquery.min.js"></script>
+ <script type="text/javascript" src="../js/jquery.easyui.min.js"></script>
+ <style>
+  a:visited, a:hover {
+    text-decoration: underline;
+  }
+  p{
+	padding:5px 0;
+  }
+  .cusbar{
+	margin:20px 0;
+	background:rgb(219,229,241);
+	line-height:35px;
+  	padding-left:10px;
+  	font-weight:bold;
+  }
+  .cusbarContainer{
+	padding-left:25px;
+  }
+  .cusbarContainer span{
+	margin-right:20px;
+  }
+  
+.cusbarContainer .descriptionimg{
+	margin-right:10px;
+	margin-top:10px;
+	width:200px;
+  }
+</style>
+</head>
+<body>
+<div id="body" region="center" style="padding-top:10px;">
+    <h3>当前位置:产品运营后台–&gt;活动详情</h3>
+    <div class='list_cntr'>
+	    <div class="leftMain " id="detailCont"></div>
+	    <script id="tplDetail" type="text/template">
+				<p class="cusbar"><span>活动基本信息</span></p>
+		        <div class="cusbarContainer">
+		           <div>
+						<img src="<%=img%>" width="50%;" style="max-width:500px;">
+		           </div>
+		           <p><strong>活动标题</strong>: <span class="showTitle"><%=title%></span></p>
+		           <p><strong>活动类型</strong>：<span><%=type%></span></p>
+		           <p><strong>活动开始时间</strong>：<span><%=start_time%></span></p>
+		           <p><strong>活动结束时间</strong>：<span><%=end_time%></span></p>
+		           <p><strong>活动地点</strong>：<span><%=locate%></span></p>
+		           <p><strong>活动地址</strong>：<b><%=url%></b></p>
+		        </div>
+		        <p class="cusbar"><span>活动详情</span></p>
+		        <div class="cusbarContainer" style="line-height:20px;"><%=description%></div>
+				<div class="cusbarContainer"><%=images%></div>
+		        <p class="cusbar"><span>其他信息</span></p>
+		        <div class="cusbarContainer">
+			        <strong>活动报名：</strong>&nbsp;<span><%=allow_apply_str%></span>
+			        <strong class="apply_end_time">报名截止时间：</strong>&nbsp;<span><%=apply_end_time%></span>
+			        <strong class="apply_max">人数上限：</strong>&nbsp;<span><%=max%></span>
+
+ 					<strong class="apply_price">活动费用：</strong>&nbsp;<span><%=apply_price%></span>
+
+			        <strong class="apply_field">报名必填信息：</strong>&nbsp;<span><%=custom_field_str%></span>
+			        <br/><br/>
+			        <strong>是否审核：</strong>&nbsp;<span><%=checktype_str%></span>
+			        <br/><br/>
+			        <strong>是否签到：</strong>&nbsp;<span><%=need_checkin_str%></span>
+			        <strong class="checkin_stime">签到开始时间：</strong>&nbsp;<span><%=checkin_start_time%></span>
+			        <strong class="checkin_etime">签到结束时间：</strong>&nbsp;<span><%=checkin_end_time%></span>
+                    <br/><br/>
+                    <strong>发起者联系方式：</strong>&nbsp;<span><%=phone%></span>
+		        </div>
+                <p class="cusbar btnTitle"><span>审核结果</span></p>
+
+				<div class="referPage1Div referPageDiv" style="display:none;">
+					<span class="OperateCheck">
+						<input name="checked_result" type="radio" value="1" class="checked_type" style="width: 40px"/>通过
+						<input name="checked_result" type="radio" value="2" class="checked_type" style="width: 40px"/>不通过
+						<span id="reason">
+							原因：
+							<input id="cid" name="selectInfo" value="请选择内容" data-options="valueField:'id',textField:'content'" style="width: 140px"/>
+						</span>
+						</span>
+                    <input name="checked_result" type="radio" value="4" class="checked_type" style="width: 40px"/>删除
+                    <span class="Operate">
+						<input name="checked_result" style="width: 40px" type="radio" value="3"  class="checked_type"/>不处理
+					</span>
+                    <br/><br/>
+                    <div style="text-align: center;">
+
+                        <a href="javascript:;" class="butSub button button-caution  button-rounded button-small">确定</a></center>
+                        <a href="javascript:;" class="goBack butCancel button button-caution  button-rounded button-small">返回</a>
+
+                    </div>
+               
+                </div>
+                <input name="acid" type="hidden" value="<%=id%>" id="acid">
+                <input id="publicity" type="hidden" value="<%=publicity%>" >
+				<div class="cusbarContainer btnDiv referPage2Div referPageDiv" style="text-align:center;padding-top:30px;display:none;">
+					<a href="javascript:;" class="btnDel button button-caution  button-rounded button-small ">删除</a>
+                    <a href="javascript:;" class="goBack btnCancel button button-caution  button-rounded button-small " >返回</a>
+				</div>
+          
+				<div class="cusbarContainer btnDiv referPage3Div referPageDiv" style="text-align:center;padding-top:30px;display:none;">
+					<a href="javascript:;" class="btnRecommend button button-caution  button-rounded button-small ">推荐</a>
+					<a href="javascript:;" class="btnRecommendalready button button-highlight  button-rounded button-small">已推荐</a>
+                    <a href="javascript:;" class="goBack btnCancel button button-caution  button-rounded button-small " >返回</a>
+				</div>
+
+				<div class="cusbarContainer btnDiv referPage4Div referPageDiv" style="text-align:center;padding-top:30px;display:none;">
+					<a href="javascript:;" class="btnRecommendCancel button button-caution  button-rounded button-small ">取消推荐</a>
+                    <a href="javascript:;" class="goBack btnCancel button button-caution  button-rounded button-small " >返回</a>
+				</div>
+				
+    		</script>
+    </div>
+    <br><br><br><br><br><br><br>
+    <div id="win" class="easyui-window" title="图片查看" style="width:420px;height:400px;display:none;" data-options="iconCls:'icon-save',modal:true,closed:true">
+	   <img src="" class="imgShowFloat" style="max-width:400px;">
+	</div>
+</div>
+	
+<div id="delDlg" class="easyui-dialog dlg" title="删除活动" data-options="iconCls:'icon-edit',modal: true,width:'300'" style="display:none;">
+    <div>
+        <input id="delId" type="hidden" name="id">
+        <p><span>删除后活动首页不显示此活动，后台数据清除，您是否进行此操作</span></p>
+        <p class='mt10'>
+          <a id='btnDelSub' href="javascript:void(0)" class="easyui-linkbutton " iconCls="icon-ok">确定</a>&nbsp;&nbsp;
+          <a id='btnDelCancel' href="javascript:void(0)" class="easyui-linkbutton " iconCls="icon-cancel">取消</a>
+        </p>
+    </div>
+</div>
+    
+<div id="recommendDlg" class="easyui-dialog dlg" title="推荐活动" data-options="iconCls:'icon-edit',modal: true,width:'300'" style="display:none;">
+    <div>
+        <input id="acId" type="hidden" name="id">
+        <p><span>是否新增此活动至精选推荐</span></p>
+        <p class='mt10'>
+          <a id='btnRecommendSub' href="javascript:void(0)" class="easyui-linkbutton " iconCls="icon-ok">确定</a>&nbsp;&nbsp;
+          <a id='btnRecommendCancel' href="javascript:void(0)" class="easyui-linkbutton " iconCls="icon-cancel">取消</a>
+        </p>
+    </div>
+</div>
+    
+<div id="recommendCancelDlg" class="easyui-dialog dlg" title="取消推荐" data-options="iconCls:'icon-edit',modal: true,width:'300'" style="display:none;">
+    <div>
+        <input id="acId" type="hidden" name="id">
+        <p><span>是否要取消推荐该活动？</span></p>
+        <p class='mt10'>
+          <a id='btnRecommendCSub' href="javascript:void(0)" class="easyui-linkbutton " iconCls="icon-ok">确定</a>&nbsp;&nbsp;
+          <a id='btnRecommendCCancel' href="javascript:void(0)" class="easyui-linkbutton " iconCls="icon-cancel">取消</a>
+        </p>
+    </div>
+</div>
+
+<div id="tipDlg" class="easyui-dialog dlg" title="提示" data-options="iconCls:'icon-map',modal: true,width:200">  
+    <div>
+        <p class='dlgLine tip_cont'>操作成功</p>
+    </div> 
+</div>
+<div id="tipDlgError" class="easyui-dialog dlg" title="提示" data-options="iconCls:'icon-map',modal: true,width:200">  
+    <div>
+        <p class='dlgLine tip_cont'>操作失败</p>
+    </div> 
+</div>	    
+<script type="text/javascript" src="../js/underscore.js"></script>
+<script type="text/javascript" src="../js/webuploader.js"></script>
+<script type="text/javascript" src="../js/imgUpload.js"></script>
+<!-- <script type="text/javascript" src="../js/list-recommend.js"></script> -->
+<script>
+$(function(){
+	// 关闭所有浮层
+	hideAllDlg();
+	bindOpenDlg();
+
+    var requestUrl = 'http://t100devactivity.systoon.com/admin/activitymanagement/';
+    /**
+     * 选择下拉框
+     * [url description]
+     * @type {[type]}
+     */
+    $('#cid').combobox({
+        url :requestUrl + 'getcontentlist',
+        valueField:'id',
+        textField:'content'
+    });
+    $('.checked_type').on('click',function() {
+        var obj = $(this);
+	
+        if (obj.val() == 1 || obj.val() ==3 || obj.val() ==4) {
+            $('#cid').combobox('setValue','请选择内容');
+            $('#reason').hide();
+
+        } else {
+             $('#reason').show();
+        }
+    });
+    $('.checked_type').click()
+    //提交
+    $('.butSub').on('click',function() {
+    
+        $.post(requestUrl + 'checkstatus',{id:$('#acid').val(),mark:$("input[name='checked_result']:checked").val(),cid:$('#cid').combobox('getValue')},function(data) {
+               
+            if (data == 'true') {
+                $('#tipDlg').dialog('open');
+                setTimeout(function(){
+                    $('#tipDlg').dialog('close');
+                },1000);
+               history.go(-1);location.reload()
+            } else if (-1 == data ){
+                $('#tipDlgError').dialog('open');
+                setTimeout(function(){
+                    $('#tipDlgError').dialog('close');
+                },1000);
+               // history.go(-1);location.reload()
+            } else if ('false' == data) {
+                $('#tipDlgError').dialog('open');
+                setTimeout(function(){
+                    $('#tipDlgError').dialog('close');
+                },1000);
+            }
+        })
+    });
+    var publicity = $('#publicity').val();
+    if (1 == publicity) {
+        $('.Operate').attr("style","display:none");
+		$("input[type=radio][name=checked_result][value=1]").prop("checked",true);  
+        $('#reason').hide();
+    } else {
+		$('.OperateCheck').attr("style","display:none");
+		$("input[type=radio][name=checked_result][value=3]").prop("checked",true);  
+    }
+    //返回
+    $('.butCancel').on('click',function() {
+        var url = 'http://t100devactivity.systoon.com/admin/html/index.html';
+        $(this).find('.goBack').attr('href', url);
+    });
+    
+});
+    
+var urlHost = window.location.host;
+var domainUrl = 'http://'+urlHost;
+    
+var QueryParamT = 1 ;
+var acInfo;
+    
+var urlParmas = window.location.search.split('&');
+var id, TypeParmaT, ROW;
+// referPage ：多个列表的详情页面使用这一个html，用此参数区分来源：
+// 1-来自审核页面，显示审核操作
+// 2-来自审核页面，审核过了，需要显示删除按钮 
+// 3-来自分类列表页面，需要显示推荐按钮 
+// 4-来自推荐列表，需要显示取消推荐按钮
+var referPage;
+if (urlParmas.length > 0) {
+    urlParmas.map(function (x) {
+        if (x.indexOf('id') > -1) {
+            id = x.split('=')[1];
+        }
+        if (x.indexOf('t') > -1) {
+            TypeParmaT = x.split('=')[1];
+        }
+        if (x.indexOf('row') > -1) {
+            ROW = x.split('=')[1];
+        }
+        if (x.indexOf('referPage') > -1) {
+        	referPage = x.split('=')[1];
+        }
+    });
+}
+
+// 不同referPage对应的返回链接不同
+var backUrl = {
+	'1':domainUrl+'/admin/html/index.html', 
+	'2':domainUrl+'/admin/html/index.html', 
+	'3':domainUrl+'/admin/html/recommend.html', 
+	'4':domainUrl+'/admin/html/recommended.html',
+};
+        
+var type = {
+	"0":"娱乐",
+    "1": "兴趣",
+    "2": "户外",
+    "3": "展览",
+    "4": "演出",
+    "5":"会议",
+    "6":"运动",
+    "7":"沙龙"
+};
+
+// 获取指定id的活动信息
+if (!id || TypeParmaT == undefined || referPage == undefined) {
+	$('#detailCont').html("缺少参数id或t或referPage参数不正确，无法请求数据");
+} else {
+    var detailUrl = domainUrl+"/admin/index/view";
+     
+    $.ajax({
+        type: "get",
+        dataType: "json",
+        data: {t: TypeParmaT, id: id},
+        url: detailUrl,
+        async: false,
+        success: function (result) {
+            // console.log(JSON.stringify(result));
+            if (result.state == 0 || result.code == 0) {
+            	acInfo = result.data;
+                var dataInfo = result.data;
+                dataInfo.type = type[dataInfo.type];
+
+                var tplHtml = $('#tplDetail').html();
+                var tpl = _.template(tplHtml);
+                $('#detailCont').html(tpl(dataInfo));
+                $('#detailCont').attr('data-id', dataInfo.id);
+                if (dataInfo.allow_apply == 0) {
+                	$('#detailCont').find('.apply_end_time + span, .apply_max + span , .apply_price + span , .apply_field + span').remove();
+                	$('#detailCont').find('.apply_end_time, .apply_max, .apply_field').remove();
+                }
+                if (dataInfo.need_checkin == 0) {
+                	$('#detailCont').find('.checkin_stime + span, .checkin_etime + span').remove();
+                	$('#detailCont').find('.checkin_stime, .checkin_etime').remove();
+                }
+            	if (referPage == 3) {
+                	// 分类列表，0-显示推荐 1-显示已推荐
+                    if (dataInfo.recommend_type == 1) {
+                    	$('.referPage3Div .btnRecommendalready').show();
+                    	$('.referPage3Div .btnRecommend').hide();
+                    } else {
+                    	$('.referPage3Div .btnRecommendalready').hide();
+                    	$('.referPage3Div .btnRecommend').show();
+                    }
+            	}
+            	if (referPage == 4) {
+                	// 推荐列表， 1-显示取消推荐
+                    if (dataInfo.recommend_type == 1) {
+                    	$('.referPage4Div .btnRecommendCancel').show();
+                    } else {
+                    	$('.referPage4Div .btnRecommendCancel').hide();
+                    }
+            	}
+                
+				// 不公开的不要推荐，因此推荐按钮
+                if (dataInfo.status != 1 || dataInfo.publicity == 0 || dataInfo.is_end == 1) {
+                	 // $('.referPage3Div .btnRecommend').remove();
+                }
+                
+                // 从不同列表页面打开详情页面，底部有不同的按钮
+                // referPage ：多个列表的详情页面使用这一个html，用此参数区分来源：
+                // 1-来自审核页面，显示审核操作
+                // 2-来自审核页面，审核过了，需要显示删除按钮 
+                // 3-来自分类列表页面，需要显示推荐按钮 
+                // 4-来自推荐列表，需要显示取消推荐按钮
+                $('.referPageDiv').each(function(){
+                	if (!$(this).hasClass('referPage'+referPage+'Div')) {
+                		$(this).remove();
+                	} else {
+                		$(this).show();
+                		if ($(this).find('.goBack').length > 0) {
+                			$(this).find('.goBack').attr('href', backUrl[referPage]);
+                		}
+                	}
+                	if (referPage == 1) {
+                		$('.btnTitle').show();
+                	} else {
+                		$('.btnTitle').remove();
+                	}
+        		});
+                
+                
+                imgBindClickEvent();
+            }
+        },
+        error: function () {
+            alert('数据请求错误！');
+        }
+    });
+	
+}
+        
+function imgBindClickEvent()
+{
+	$('.descriptionimg').on('click', function(){
+		$('.imgShowFloat').attr('src', $(this).attr('src'));
+		var imgWidth = $(this).attr('data-width');
+		var imgHeight = $(this).attr('data-height');
+		if (imgWidth > 400) {
+			imgHeight = parseInt(imgHeight*400/imgWidth);
+			imgWidth = 400;
+		}
+		$('#win').css({'width':imgWidth+'px', 'height':(imgHeight+3)+'px'});
+		$('#win').window('open');
+	});
+}
+        
+function hideAllDlg()
+{
+    $('#delDlg').dialog('close');
+    $('#recommendDlg').dialog('close');
+    $('#recommendCancelDlg').dialog('close');
+    $('#tipDlg').dialog('close');
+    $('#tipDlgError').dialog('close');
+}
+        
+function bindOpenDlg()
+{
+	// 点击删除按钮，打开删除提示浮层
+	$('.btnDel').on("click", function(){
+		$('#delId').val($('#detailCont').attr('data-id'));
+		$('#delDlg').dialog('open');
+	});
+	// 点击推荐按钮,打开推荐提示浮层
+	$('.btnRecommend').on("click", function(){
+		$('#recommendDlg #acId').val($('#detailCont').attr('data-id'));
+		$('#recommendDlg').dialog('open');
+	});
+	// 点击取消推荐按钮,打开推荐提示浮层
+	$('.btnRecommendCancel').on("click", function(){
+		$('#recommendCancelDlg #acId').val($('#detailCont').attr('data-id'));
+		$('#recommendCancelDlg').dialog('open');
+	});
+}
+        
+$(function(){
+  //  推荐浮层中，点击确定按钮
+  $('#btnRecommendSub').on('click',function(){
+	var id = $('#recommendDlg #acId').val();
+    $.post('http://'+urlHost+'/admin/recommend/changeRecommend', { 'id':id })
+    .done(function(e){
+        //e = JSON.parse(e);
+    	if (e.code == 0) {
+    		tipShow('操作成功！');
+    		setTimeout(function(){
+    			window.location.reload();
+    		}, 500);
+    	} else {
+    		tipShow(e.msg);
+    	}
+    });
+  });
+  // 推荐浮层中，点击取消按钮，关闭浮层
+  $("#btnRecommendCancel").on('click', function(){
+	  $('#recommendDlg').dialog('close');
+  });
+  
+  //取消推荐浮层中，点击确定按钮
+  $('#btnRecommendCSub').on('click',function(){
+	var id = $('#recommendCancelDlg #acId').val();
+    $.post('http://'+urlHost+'/admin/recommend/changeRecommend', { 'id':id, 'addrecommend':0 })
+    .done(function(e){
+        //e = JSON.parse(e);
+    	if (e.code == 0) {
+    		tipShow('操作成功！');
+    		setTimeout(function(){
+    			window.location.reload();
+    		}, 500);
+    	} else {
+    		tipShow(e.msg);
+    	}
+    });
+  });
+  // 取消推荐浮层中，点击取消按钮，关闭浮层
+  $("#btnRecommendCCancel").on('click', function(){
+	  $('#recommendCancelDlg').dialog('close');
+  });
+});
+
+function tipShow(str,reflash){
+    $('#tipDlg').find('.tip_cont').html(str);
+    $('#tipDlg').dialog('open');
+    setTimeout(function(){
+        $('#tipDlg').dialog('close');
+    },1000)
+}
+
+</script>
+</body>
+</html>

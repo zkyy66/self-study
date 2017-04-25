@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html class="listHtml">
+<head>
+ <meta charset="UTF-8">
+ <title>活动列表</title>
+ <link rel="stylesheet" type="text/css" href="../themes/default/easyui.css">
+ <link rel="stylesheet" type="text/css" href="../themes/icon.css">
+ <link rel="stylesheet" type="text/css" href="../css/list.css">
+ <link rel="stylesheet" type="text/css" href="../css/button.css">
+ <link rel="stylesheet" type="text/css" href="../css/webuploader.css">
+ <script type="text/javascript" src="../js/jquery.min.js"></script>
+ <script type="text/javascript" src="../js/jquery.easyui.min.js"></script>
+ <style>
+  a:visited, a:hover {
+    text-decoration: underline;
+  }
+  .searchtitle{
+	margin-left:10px;
+  }
+.button-small {
+    font-size: 12px;
+    height: 22px;
+    line-height: 22px;
+    padding: 0 7px;
+}
+.button-tiny {
+    font-size: 12px;
+    height: 22px;
+    line-height: 22px;
+    padding: 0 7px;
+}
+.button{
+	margin-right:3px;
+	margin-left:3px;
+}
+
+</style>
+</head>
+<body>
+    <div id="body" region="center" style="padding-top:10px;">
+        <h3>当前位置:有约系列产品运营后台–&gt;活动列表</h3>
+        <div class='search_cntr cf'>
+            <form class='fl' id='searchForm'>
+			    <div>
+					<label class="searchtitle">活动名称：</label>
+					<input type="text" name="title"/>
+					
+					<label class="searchtitle">名片号：</label>
+					<input type="text" name="u_no"/>
+					<label class="searchnickname">昵称：</label>
+					<input type="text" name="nickname" />
+					<label class="searchtitle">操作人：</label>
+					<input type="text" name="operator"/>
+					
+			<!-- 		<label class="searchtitle">报名截止时间：</label>
+					<input class=" easyui-datetimebox" data-options="showSeconds:false" type="text" name="apply_start" />-
+					<input class=" easyui-datetimebox" data-options="showSeconds:false" type="text" name="apply_end"/> -->
+<!-- 					<br/><br/> -->
+					<label class="searchtitle">活动开始时间：</label>
+					<input class=" easyui-datetimebox" data-options="showSeconds:false" type="text" name="start_start" />-
+					<input class=" easyui-datetimebox" data-options="showSeconds:false" type="text" name="start_end"/>
+					<br/><br/>
+			    	<label class="searchtitle">活动发布时间：</label>
+					<input class=" easyui-datetimebox" data-options="showSeconds:false" type="text" name="create_start" />-
+					<input class=" easyui-datetimebox" data-options="showSeconds:false" type="text" name="create_end"/>
+					<a id='searchSubmit' href="javascript:void(0)" class="button button-medium button-royal button-rounded button-giant" style="height: 30px; line-height: 30px; font-size: 14px; padding: 0 30px; margin-right: 10px; margin-left: 10px; ">搜索</a>
+					<a id='searchClear' href="javascript:void(0)" onclick="window.location.reload();" style="text-decoration:underline;">&nbsp;&nbsp;点击清除搜索条件</a> 
+					
+			    </div>
+			</form>
+        </div>
+        <div class='list_cntr'>
+           <ul class='list_tab' id="listTab">
+                <li class='select_tab' data-type='-1'>待审核</li>
+                <li data-type='0'>通过</li>
+                <li data-type='1'>未通过</li>
+                <!-- <li data-type='2'>不处理</li> -->
+            </ul>
+            <table id="tableListOn" class="easyui-datagrid" style="table-layout:fixed;">
+            </table>
+            <div id="tt_btn">
+                <!--  <a href="javascript:void(0)"  id="update" class="easyui-linkbutton" iconCls="icon-edit" plain="true">修改</a> 
+                <a href="javascript:void(0)"  id="off" class="easyui-linkbutton" iconCls="icon-remove" plain="true">下墙</a>
+                <a href="javascript:void(0)"  id="on" class="easyui-linkbutton" iconCls="icon-add" plain="true">上墙</a>
+                <a href="javascript:void(0)"  id="beixuan" class="easyui-linkbutton" iconCls="icon-blog" plain="true">添加备选</a>
+                <a href="./detail.html"  id="viewDetail" class="easyui-linkbutton" iconCls="icon-map" plain="true">查看详情</a> 
+                <span>(按住ctrl键可多选)</span> -->
+	            <div>
+	            	<div class='busy_box' id="loaddData">loadding</div>
+	            	<div class='busy_box' id="noData">暂无数据</div>
+	        	</div>
+    		</div>
+    		
+		    <div id="orderDlg" class="easyui-dialog dlg" title="修改排序" data-options="iconCls:'icon-edit',modal: true,width:'300'" style="display:none;">
+		        <div>
+		            <input id="orderId" type="hidden" name="id">
+		            <p><span>将此项目移到</span>&nbsp;<input type="number" min="1">&nbsp;<span>项</span></p>
+		            <p class='mt10'>
+		              <a id='changeOder' href="javascript:void(0)" class="easyui-linkbutton " iconCls="icon-ok">确定</a>
+		              <a id='changeOderCancel' href="javascript:void(0)" class="easyui-linkbutton " iconCls="icon-cancel">取消</a>
+		            </p>
+		        </div>    
+		    </div>
+		    
+		    <div id="delDlg" class="easyui-dialog dlg" title="删除活动" data-options="iconCls:'icon-edit',modal: true,width:'300'" style="display:none;">
+		        <div>
+		            <input id="delId" type="hidden" name="id">
+		            <p><span>删除后活动首页不显示此活动，后台数据清除，您是否进行此操作</span></p>
+		            <p class='mt10'>
+		              <a id='btnDelSub' href="javascript:void(0)" class="easyui-linkbutton " iconCls="icon-ok">确定</a>&nbsp;&nbsp;
+		              <a id='btnDelCancel' href="javascript:void(0)" class="easyui-linkbutton " iconCls="icon-cancel">取消</a>
+		            </p>
+		        </div>
+		    </div>
+		    
+		    <div id="onwallDlg" class="easyui-dialog dlg" title="活动上墙" data-options="iconCls:'icon-edit',modal: true,width:'400'" style="display:none;">
+		        <div>
+		            <input id="onwallId" type="hidden" name="id">
+		            <p style="text-align: left;line-height: 45px;">
+		              <span><input type="radio" name="onwallNow" value="1" style="width: 20px;" checked='checked'>立即上墙</span>
+		            </p>
+		            <p style="text-align: left;">
+		              <span>上墙时间设置：
+		              <input class="easyui-datetimebox" name="onwallTime" data-options="showSeconds:false" value="" style="width:150px">
+		            </p>
+		            <p class='mt10' style="margin-top:25px;">
+		              <a id='btnOnwallSub' href="javascript:void(0)" class="easyui-linkbutton " iconCls="icon-ok">确定</a>&nbsp;&nbsp;
+		              <a id='btnOnwallCancel' href="javascript:void(0)" class="easyui-linkbutton " iconCls="icon-cancel">取消</a>
+		            </p>
+		        </div>    
+		    </div>
+		    
+		    <div id="offwallDlg" class="easyui-dialog dlg" title="活动下墙" data-options="iconCls:'icon-edit',modal: true,width:'400'" style="display:none;">
+		        <div>
+		            <input id="offwallId" type="hidden" name="id">
+		            <p style="text-align: left;line-height: 45px;">
+		              <span><input type="radio" name="offwallNow" value="1" style="width: 20px;" checked='checked'>立即下墙</span>
+		            </p>
+		            <p style="text-align: left;">
+		              <span>上墙时间设置：
+		              <input class="easyui-datetimebox" name="offwallTime" data-options="showSeconds:false" value="" style="width:150px">
+		            </p>
+		            <p class='mt10' style="margin-top:25px;">
+		              <a id='btnOffwallSub' href="javascript:void(0)" class="easyui-linkbutton " iconCls="icon-ok">确定</a>&nbsp;&nbsp;
+		              <a id='btnOffwallCancel' href="javascript:void(0)" class="easyui-linkbutton " iconCls="icon-cancel">取消</a>
+		            </p>
+		        </div>    
+		    </div>
+		    
+    		<div id="editDlg" class="easyui-dialog overViewDlg" title="编辑" data-options="iconCls:'icon-map',modal: true,width:'800'"></div>
+		    <div id="tipDlg" class="easyui-dialog dlg" title="提示" data-options="iconCls:'icon-map',modal: true,width:200">  
+		        <div>
+		            <p class='dlgLine tip_cont'>操作成功</p>
+		        </div> 
+		    </div>
+		    <!--  <div id="iframeDlg" class="easyui-dialog iframeDlg" title="有约系列产品运营后台" data-options="iconCls:'icon-map',modal: true,width:'800',height:'400'">  
+		        <iframe src="" frameborder="0"></iframe>
+		    </div> -->
+    <script type="text/javascript" src="../js/underscore.js"></script>
+    <script type="text/javascript" src="../js/webuploader.js"></script>
+    <script type="text/javascript" src="../js/imgUpload.js"></script>
+    <script type="text/javascript" src="../js/list.js"></script>
+    <script>
+        var QueryParamT = 1 ; 
+    </script>
+<body>
+</html>
