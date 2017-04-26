@@ -1,15 +1,17 @@
 <?php
+
 /**
  * 公用函数类
  * @description 包含所有非业务相关的所有公共函数
  * @author zhaowei
- * @version 2016-05-24
+ * @Release <2016-05-24>
  */
-class Fn {
+class Fn
+{
     
-    const ALARM_SMS     = 1;
-    const ALARM_MAIL    = 2;
-    const ALARM_LOG     = 3;
+    const ALARM_SMS = 1;
+    const ALARM_MAIL = 2;
+    const ALARM_LOG = 3;
     
     /*
      * 根据传入参数获取pdo数据类型
@@ -17,137 +19,155 @@ class Fn {
      * @param string $val 传入值
      * @return string 
      */
-	public static function select_datatype( $val ) {
-	    
-		if ( is_string( $val ) )  return PDO::PARAM_STR;
-		if ( is_int( $val ) )     return PDO::PARAM_INT;
-		if ( is_null( $val ) )    return PDO::PARAM_NULL;
-        if ( is_bool( $val ) )    return PDO::PARAM_BOOL;
+    public static function select_datatype($val)
+    {
+        
+        if (is_string($val)) {
+            return PDO::PARAM_STR;
+        }
+        
+        if (is_int($val)) {
+            return PDO::PARAM_INT;
+        }
+        if (is_null($val)) {
+            return PDO::PARAM_NULL;
+        }
+        
+        if (is_bool($val)) {
+            return PDO::PARAM_BOOL;
+        }
+        
         return PDO::PARAM_STR;
-	}
-
+    }
+    
     /*
      * 显示调试信息
      *
      * @param string $str 传入值 
      */
-    public static function writeLog( $str , $fileName = '' ) {
-        if (! $fileName) {
-            $fileName =  'error.log';
+    public static function writeLog($str, $fileName = '')
+    {
+        if (!$fileName) {
+            $fileName = 'error.log';
         }
-
-        $str = '['.date("Y-m-d H:i:s").'] '.$str;
+        
+        $str = '[' . date("Y-m-d H:i:s") . '] ' . $str;
         Log::write($str, Log::INFO, $fileName);
     }
     
-    public static function writeStdOut( $file, $content ) {
+    public static function writeStdOut($file, $content)
+    {
         $fh = fopen('php://stdout', 'w');
-        fwrite($fh, $content."\n");
+        fwrite($fh, $content . "\n");
         fclose($fh);
     }
+    
     /**
      * 通过CURL库进POST数据提交
      *
-     * @param string $postUrl  url address
-     * @param array $data  post data
+     * @param string $postUrl url address
+     * @param array $data post data
      * @param int $timeout connect time out
      * @param bool $debug 打开 header 数据
      * @return string
      */
-    public static function curlPost( $postUrl, $data = '', $timeout = 30, $header = [], $debug = false ) {
+    public static function curlPost($postUrl, $data = '', $timeout = 30, $header = [], $debug = false)
+    {
         $ch = curl_init();
-        curl_setopt( $ch, CURLOPT_URL, $postUrl );
-        curl_setopt( $ch, CURLOPT_POST, true );
-        curl_setopt( $ch, CURLOPT_RETURNTRANSFER, true );
-        curl_setopt( $ch, CURLOPT_HEADER, $debug );
-        curl_setopt( $ch, CURLOPT_HTTPHEADER, $header );
-        curl_setopt( $ch, CURLINFO_HEADER_OUT, $debug );
-        curl_setopt( $ch, CURLOPT_TIMEOUT, $timeout );
-        curl_setopt( $ch, CURLOPT_POSTFIELDS, $data );
-
-        $result = curl_exec( $ch );
-        $info   = curl_getinfo( $ch );   //用于调试信息
-        curl_close( $ch );
-
-        if ( $result === false ) {
-            self::writeLog( json_encode( $info ) );
-            return false;
-        }
-        return trim( $result );
-    }
-
-    /**
-     * 获取url返回值，curl方法
-     */
-    public static function curlGet( $url, $timeout = 1 ) {
-        $ch = curl_init();
-        curl_setopt( $ch, CURLOPT_URL, $url );
-        curl_setopt( $ch, CURLOPT_RETURNTRANSFER, true );
-        curl_setopt( $ch, CURLOPT_CONNECTTIMEOUT, $timeout );
+        curl_setopt($ch, CURLOPT_URL, $postUrl);
+        curl_setopt($ch, CURLOPT_POST, true);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_HEADER, $debug);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, $header);
+        curl_setopt($ch, CURLINFO_HEADER_OUT, $debug);
+        curl_setopt($ch, CURLOPT_TIMEOUT, $timeout);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
         
-        $ret  = curl_exec( $ch );
+        $result = curl_exec($ch);
         $info = curl_getinfo($ch);   //用于调试信息
         curl_close($ch);
         
-        if ( $ret === false ) {
-            self::writeLog( json_encode( $info ) );
+        if ($result === false) {
+            self::writeLog(json_encode($info));
             return false;
         }
-        return trim( $ret );
+        return trim($result);
     }
-  
+    
+    /**
+     * 获取url返回值，curl方法
+     */
+    public static function curlGet($url, $timeout = 1)
+    {
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, $url);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, $timeout);
+        
+        $ret = curl_exec($ch);
+        $info = curl_getinfo($ch);   //用于调试信息
+        curl_close($ch);
+        
+        if ($ret === false) {
+            self::writeLog(json_encode($info));
+            return false;
+        }
+        return trim($ret);
+    }
+    
     /**
      * 二维数组按指定的键值排序
      */
-    public static function array_sort( $array, $keys, $type='asc' ) {
-        if( !isset( $array ) || !is_array( $array ) || empty( $array ) ) return '';
-        if( !isset( $keys ) || trim( $keys ) == '' ) return '';
-        if( !isset( $type ) || $type == '' || !in_array( strtolower( $type ), array( 'asc', 'desc' ) ) ) return '';
+    public static function array_sort($array, $keys, $type = 'asc')
+    {
+        if (!isset($array) || !is_array($array) || empty($array)) return '';
+        if (!isset($keys) || trim($keys) == '') return '';
+        if (!isset($type) || $type == '' || !in_array(strtolower($type), array('asc', 'desc'))) return '';
         
-        $keysvalue  = [];
-        foreach( $array as $key => $val ) {
-            $val[ $keys ]   = str_replace( '-', '', $val[ $keys ] );
-            $val[ $keys ]   = str_replace( ' ', '', $val[ $keys ] );
-            $val[ $keys ]   = str_replace( ':', '', $val[ $keys ] );
-            $keysvalue[]    = $val[ $keys ];
+        $keysvalue = [];
+        foreach ($array as $key => $val) {
+            $val[$keys] = str_replace('-', '', $val[$keys]);
+            $val[$keys] = str_replace(' ', '', $val[$keys]);
+            $val[$keys] = str_replace(':', '', $val[$keys]);
+            $keysvalue[] = $val[$keys];
         }
         
-        asort( $keysvalue ); //key值排序
-        reset( $keysvalue ); //指针重新指向数组第一个
-        foreach( $keysvalue as $key => $vals ) 
+        asort($keysvalue); //key值排序
+        reset($keysvalue); //指针重新指向数组第一个
+        foreach ($keysvalue as $key => $vals)
             $keysort[] = $key;
         
-        $keysvalue  = [];
-        $count      = count( $keysort );
-        if( strtolower( $type ) != 'asc' ) {
-            for( $i = $count - 1; $i >= 0; $i-- ) 
-                $keysvalue[] = $array[ $keysort[ $i ] ];
-        }else{
-            for( $i = 0; $i < $count; $i++ )
-                $keysvalue[] = $array[ $keysort[ $i ] ];
+        $keysvalue = [];
+        $count = count($keysort);
+        if (strtolower($type) != 'asc') {
+            for ($i = $count - 1; $i >= 0; $i--)
+                $keysvalue[] = $array[$keysort[$i]];
+        } else {
+            for ($i = 0; $i < $count; $i++)
+                $keysvalue[] = $array[$keysort[$i]];
         }
         return $keysvalue;
     }
     
     /**
-    * 从结果集中总取出last names列，用相应的id作为键值
-    * 原数据:
-    * $records = array(
-        array(
-            'id' => 2135,
-            'first_name' => 'John',
-            'last_name' => 'Doe',
-        ),
-      );
-    * array_column($records, 'last_name', 'id');
-    * 结果:
-    * Array
-        (
-            [2135] => Doe
-            [3245] => Smith
-            [5342] => Jones
-            [5623] => Doe
-        )
+     * 从结果集中总取出last names列，用相应的id作为键值
+     * 原数据:
+     * $records = array(
+     * array(
+     * 'id' => 2135,
+     * 'first_name' => 'John',
+     * 'last_name' => 'Doe',
+     * ),
+     * );
+     * array_column($records, 'last_name', 'id');
+     * 结果:
+     * Array
+     * (
+     * [2135] => Doe
+     * [3245] => Smith
+     * [5342] => Jones
+     * [5623] => Doe
+     * )
      */
     public static function array_column($input, $columnKey, $indexKey = NULL)
     {
@@ -155,77 +175,70 @@ class Fn {
         $indexKeyIsNull = (is_null($indexKey)) ? TRUE : FALSE;
         $indexKeyIsNumber = (is_numeric($indexKey)) ? TRUE : FALSE;
         $result = array();
-
-        foreach ((array)$input AS $key => $row)
-        {
-            if ($columnKeyIsNumber)
-            {
+        
+        foreach ((array)$input AS $key => $row) {
+            if ($columnKeyIsNumber) {
                 $tmp = array_slice($row, $columnKey, 1);
                 $tmp = (is_array($tmp) && !empty($tmp)) ? current($tmp) : NULL;
-            }
-            else
-            {
+            } else {
                 $tmp = isset($row[$columnKey]) ? $row[$columnKey] : NULL;
             }
-            if ( ! $indexKeyIsNull)
-            {
-                if ($indexKeyIsNumber)
-                {
+            if (!$indexKeyIsNull) {
+                if ($indexKeyIsNumber) {
                     $key = array_slice($row, $indexKey, 1);
-                    $key = (is_array($key) && ! empty($key)) ? current($key) : NULL;
+                    $key = (is_array($key) && !empty($key)) ? current($key) : NULL;
                     $key = is_null($key) ? 0 : $key;
-                }
-                else
-                {
+                } else {
                     $key = isset($row[$indexKey]) ? $row[$indexKey] : 0;
                 }
             }
-
+            
             $result[$key] = $tmp;
         }
-
+        
         return $result;
     }
     
     /**
      * 内容审核接口
      * @params $content String
-     * @params $projectName String 
+     * @params $projectName String
      */
-    public static function audiing_logs( $content, $projectName ) {
+    public static function audiing_logs($content, $projectName)
+    {
         
-        $log        = '/home/logs/' . $projectName . '-auditing.log';
-        $countFile  = '/home/logs/count';
-        $fileSize   = 0;
-        $maxSize    = 1024 * 1024 * 10;
+        $log = '/home/logs/' . $projectName . '-auditing.log';
+        $countFile = '/home/logs/count';
+        $fileSize = 0;
+        $maxSize = 1024 * 1024 * 10;
         
-        if( file_exists( $log ) )  $fileSize    = filesize( $log );
-        if( $fileSize >= $maxSize ) {
-            if( file_exists('/home/logs/count') ) {
-                $count  = file_get_contents( $countFile );
-                if( $count != false )
-                    $newFile    = $log . '.' . $count;
+        if (file_exists($log)) $fileSize = filesize($log);
+        if ($fileSize >= $maxSize) {
+            if (file_exists('/home/logs/count')) {
+                $count = file_get_contents($countFile);
+                if ($count != false)
+                    $newFile = $log . '.' . $count;
+            } else {
+                $newFile = $log . '.0';
             }
-            else {
-                $newFile    = $log . '.0';
-            } 
-            file_put_contents( $countFile, intval( $count ) + 1 );
-            rename( $log, $newFile );
+            file_put_contents($countFile, intval($count) + 1);
+            rename($log, $newFile);
         }
-        file_put_contents( $log, $content . "\n\n", FILE_APPEND );
+        file_put_contents($log, $content . "\n\n", FILE_APPEND);
     }
-
+    
     /**
      * @param string $prifix
      * @return string
      */
-    public static function getUuid( $prifix = '' ) {
-        $chars  = md5( uniqid( mt_rand(), true ) );
-        $uuid   = substr( $chars, 0, 8 ) . '-';
-        $uuid   .= substr( $chars, 8, 4 ) . '-';
-        $uuid   .= substr( $chars, 12, 4 ) . '-';
-        $uuid   .= substr( $chars, 16, 4 ) . '-';
-        $uuid   .= substr( $chars, 20, 12 );
+    public static function getUuid($prifix = '')
+    {
+        $chars = md5(uniqid(mt_rand(), true));
+        $uuid = substr($chars, 0, 8) . '-';
+        $uuid .= substr($chars, 8, 4) . '-';
+        $uuid .= substr($chars, 12, 4) . '-';
+        $uuid .= substr($chars, 16, 4) . '-';
+        $uuid .= substr($chars, 20, 12);
         return $prifix . $uuid;
     }
     
@@ -237,7 +250,8 @@ class Fn {
      * @param unknown $lng2
      * @return number
      */
-    public static function getDistance($lat1, $lng1, $lat2, $lng2) {
+    public static function getDistance($lat1, $lng1, $lat2, $lng2)
+    {
         //地球半径
         $R = 6378137;
         //将角度转为狐度
@@ -246,10 +260,10 @@ class Fn {
         $radLng1 = deg2rad($lng1);
         $radLng2 = deg2rad($lng2);
         //结果
-        $s = acos(cos($radLat1)*cos($radLat2)*cos($radLng1-$radLng2)+sin($radLat1)*sin($radLat2))*$R;
+        $s = acos(cos($radLat1) * cos($radLat2) * cos($radLng1 - $radLng2) + sin($radLat1) * sin($radLat2)) * $R;
         //精度
-        $s = round($s* 10000)/10000;
-        return  round($s);
+        $s = round($s * 10000) / 10000;
+        return round($s);
     }
     
     /**
@@ -259,28 +273,29 @@ class Fn {
      * @param string $data
      * @param string $noCache
      */
-    public static function outputToJson( $code, $message, $data = null, $noCache = true ) {
+    public static function outputToJson($code, $message, $data = null, $noCache = true)
+    {
         header("Content-type: application/json; charset=utf-8");
         
-        if ( $noCache ) {
+        if ($noCache) {
             header("Cache-Control: no-cache");
         }
         
         $msg = array(
             'meta' => array(
                 'code' => $code,
-                'message'  => $message,
+                'message' => $message,
                 'timestamp' => self::getMillisecond(),
             ),
             'data' => $data
         );
-    
+        
         $msg = json_encode($msg);
         
         header('Content-Length:' . strlen($msg));
         
         echo $msg;
-        exit(0);        
+        exit(0);
     }
     
     /**
@@ -294,7 +309,7 @@ class Fn {
         $I = 0;
         $StringLast = array();
         $Length = strlen($str);
-        while ( $I < $Length ) {
+        while ($I < $Length) {
             $StringTMP = substr($str, $I, 1);
             if (ord($StringTMP) >= 224) {
                 if ($I + 3 > $Length) {
@@ -302,20 +317,18 @@ class Fn {
                 }
                 $StringTMP = substr($str, $I, 3);
                 $I = $I + 3;
-            }
-            elseif (ord($StringTMP) >= 192) {
+            } elseif (ord($StringTMP) >= 192) {
                 if ($I + 2 > $Length) {
                     break;
                 }
                 $StringTMP = substr($str, $I, 2);
                 $I = $I + 2;
-            }
-            else {
+            } else {
                 $I = $I + 1;
             }
             $StringLast[] = $StringTMP;
         }
-    
+        
         return count($StringLast);
     }
     
@@ -330,12 +343,11 @@ class Fn {
     {
         if (strlen($string) <= $length) {
             return $string;
-        }
-        else {
+        } else {
             $I = 0;
             $J = 0;
             $strLen = strlen($string);
-            while ( $I < $length && $J < $strLen ) {
+            while ($I < $length && $J < $strLen) {
                 $StringTMP = substr($string, $J, 1);
                 if (ord($StringTMP) >= 224) {
                     if ($J + 3 > $strLen) {
@@ -343,15 +355,13 @@ class Fn {
                     }
                     $StringTMP = substr($string, $J, 3);
                     $J = $J + 3;
-                }
-                elseif (ord($StringTMP) >= 192) {
+                } elseif (ord($StringTMP) >= 192) {
                     if ($J + 2 > $strLen) {
                         break;
                     }
                     $StringTMP = substr($string, $J, 2);
                     $J = $J + 2;
-                }
-                else {
+                } else {
                     $J = $J + 1;
                 }
                 $StringLast[] = $StringTMP;
@@ -365,23 +375,24 @@ class Fn {
         }
     }
     
-
+    
     /**
      * 验证必填参数
      * @param array $params 参数一维数组
      * @param boolen $result
      */
-    public static function checkNecessaryParams($params){
+    public static function checkNecessaryParams($params)
+    {
         $result = true;
-
+        
         foreach ($params as $k => $v) {
-            if(empty($v)){
+            if (empty($v)) {
                 $result = false;
-                self::writeLog(date("Y-m-d H:i:s")."\n".$k."必填\n");
+                self::writeLog(date("Y-m-d H:i:s") . "\n" . $k . "必填\n");
                 break;
             }
         }
-
+        
         return $result;
     }
     
@@ -389,60 +400,65 @@ class Fn {
      * 获取13位时间戳
      * @return string
      */
-    public static function getMillisecond() {
+    public static function getMillisecond()
+    {
         list($t1, $t2) = explode(' ', microtime());
         return (float)sprintf('%.0f', (floatval($t1) + floatval($t2)) * 1000);
     }
     
     /**
      * 报警函数
-     * @param unknown $level    报警级别
-     * @param unknown $title    报警title
-     * @param unknown $msg      报警详情
+     * @param unknown $level 报警级别
+     * @param unknown $title 报警title
+     * @param unknown $msg 报警详情
      */
-    public static function alarm( $level, $title, $msg ) {
+    public static function alarm($level, $title, $msg)
+    {
     
     }
-
-
+    
+    
     /**
      * 日期统一格式化
      * @param $tm
      * @return false|string
      */
-    public static function dateformat( $tm ) {
-        return date( 'Y-m-d H:i', $tm );
+    public static function dateformat($tm)
+    {
+        return date('Y-m-d H:i', $tm);
     }
-
+    
     /**
      * 调试输出
      */
-    public static function p($arr) {
+    public static function p($arr)
+    {
         echo '<pre>';
         print_r($arr);
         die();
     }
-
+    
     /**
      * @param $string
      * @param int $force
      * @return array|mixed|string
      */
-    public static function daddcslashes($string, $force = 1) {
-        if (is_array ( $string )) {
-            $keys = array_keys ( $string );
-            foreach ( $keys as $key ) {
+    public static function daddcslashes($string, $force = 1)
+    {
+        if (is_array($string)) {
+            $keys = array_keys($string);
+            foreach ($keys as $key) {
                 $val = $string [$key];
-                unset ( $string [$key] );
-                $key = addcslashes ( $key, "\n\r\\'\"\032" );
-                $key = str_replace ( "_", "\_", $key ); // 转义掉”_”
-                $key = str_replace ( "%", "\%", $key ); // 转义掉”%”
-                $string [$key] = daddcslashes ( $val, $force );
+                unset ($string [$key]);
+                $key = addcslashes($key, "\n\r\\'\"\032");
+                $key = str_replace("_", "\_", $key); // 转义掉”_”
+                $key = str_replace("%", "\%", $key); // 转义掉”%”
+                $string [$key] = daddcslashes($val, $force);
             }
         } else {
-            $string = addcslashes ( $string, "\n\r\\'\"\032" );
-            $string = str_replace ( "_", "\_", $string ); // 转义掉”_”
-            $string = str_replace ( "%", "\%", $string ); // 转义掉”%”
+            $string = addcslashes($string, "\n\r\\'\"\032");
+            $string = str_replace("_", "\_", $string); // 转义掉”_”
+            $string = str_replace("%", "\%", $string); // 转义掉”%”
         }
         return $string;
     }
@@ -452,36 +468,39 @@ class Fn {
      */
     public static function checkPhone($phonenumber)
     {
-        if(preg_match("/^1[34578]{1}\d{9}$/", $phonenumber)){
+        if (preg_match("/^1[34578]{1}\d{9}$/", $phonenumber)) {
             return true;
         }
         return false;
     }
-
+    
     /**
      * 验证身份证长度
      * @param $card_id
      * @return bool
      */
-    public static function checkCard($card_id) {
-        if (preg_match("/^(\d{18,18}|\d{15,15}|\d{17,17}X)$/",strtoupper($card_id))) {
+    public static function checkCard($card_id)
+    {
+        if (preg_match("/^(\d{18,18}|\d{15,15}|\d{17,17}X)$/", strtoupper($card_id))) {
             return true;
         }
-
+        
         return false;
     }
-
+    
     /**
      * 验证邮箱格式
      * @param $email
      * @return bool
      */
-    public static function checkEmail($email) {
-        if (preg_match("/^([0-9A-Za-z\\-_\\.]+)@([0-9a-z]+\\.[a-z]{2,3}(\\.[a-z]{2})?)$/i",$email)) {
+    public static function checkEmail($email)
+    {
+        if (preg_match("/^([0-9A-Za-z\\-_\\.]+)@([0-9a-z]+\\.[a-z]{2,3}(\\.[a-z]{2})?)$/i", $email)) {
             return true;
         }
         return false;
     }
+    
     /**
      * 发邮件
      * @param array $mail_from 邮件发送方信息 array('smtp_host' =>'smtp.xx.com','email'=>'xxx@163.com','name'=>'','password'=>'xx')
@@ -493,30 +512,30 @@ class Fn {
      * @param string $charset 编码
      * @author liweiwei
      */
-    public static function sendMail($mailTo, $title, $content, $attachment = null, $content_type='TEXT', $charset='utf8')
+    public static function sendMail($mailTo, $title, $content, $attachment = null, $content_type = 'TEXT', $charset = 'utf8')
     {
         require_once APP_PATH . '/application/library/PHPMailer/PHPMailerAutoload.php';
-
+        
         $content_type = strtoupper($content_type);
-
+        
         $mail = new PHPMailer(); // 实例化phpmailer
-
+        
         $mail->IsSMTP(); // 设置发送邮件的协议：SMTP
-
-        $mail->Host         = '172.28.2.240'; // 发送邮件的服务器  例如：smtp.exmail.qq.com、smtp.sina.cn、smtp.163.com
+        
+        $mail->Host = '172.28.2.240'; // 发送邮件的服务器  例如：smtp.exmail.qq.com、smtp.sina.cn、smtp.163.com
         $mail->Port = 25;
-        $mail->SMTPAuth     = true; // 打开SMTP
-        $mail->Username     = 'zanzanapp@syswin.com'; // SMTP账户---公司RTX账号
-        $mail->Password     = 'syswin#123'; // SMTP密码
-        $mail->SMTPSecure   = 'ssl';
-
+        $mail->SMTPAuth = true; // 打开SMTP
+        $mail->Username = 'zanzanapp@syswin.com'; // SMTP账户---公司RTX账号
+        $mail->Password = 'syswin#123'; // SMTP密码
+        $mail->SMTPSecure = 'ssl';
+        
         if ($content_type == 'HTML') {
             $mail->IsHTML(true);
         } //是否使用HTML格式
-
-        $mail->From     = 'zanzanapp@syswin.com';
+        
+        $mail->From = 'zanzanapp@syswin.com';
         $mail->FromName = '赞赞官方';
-
+        
         // 添加多个发送人
         if (is_array($mailTo)) {
             foreach ($mailTo as $val) {
@@ -525,28 +544,28 @@ class Fn {
         } else {
             $mail->AddAddress($mailTo);
         }
-
+        
         if ($attachment) {
             $mail->AddAttachment($attachment); // 设置附件，服务器路径
         }
-
+        
         //设置字符集编码
         if ($charset != 'utf8') {
             $mail->CharSet = $charset;
         } else {
             $mail->CharSet = "UTF-8";
         }
-
+        
         $mail->Subject = "=?UTF-8?B?" . base64_encode($title) . "?=";
-
+        
         //邮件内容（可以是HTML邮件）
         $mail->Body = $content;
-
-        if (! $mail->send()) {
-            Fn::writeLog('发送邮件失败: '.$mail->ErrorInfo);
+        
+        if (!$mail->send()) {
+            Fn::writeLog('发送邮件失败: ' . $mail->ErrorInfo);
             return false;
         }
-
+        
         return true;
     }
     
@@ -557,16 +576,16 @@ class Fn {
     public static function sendNoticeForActivity($fromFeedId, $toFeedId, $toUid, $contentArr)
     {
         $imContent = array(
-                'catalogId' => 138,
-                'catalog'   => "社交娱乐", // 位于通知列表页面标题
-                'subCatalog' => "活动通知", // 打开通知后，顶部展示
-                "headFeed"   => $fromFeedId,
-                'finishFlag' => 0,
-                'summary' => '',// // 位于通知列表页面标题下面的一行小字，点开通知后也有这个展示
-                'actionType' => 1,
-                'headFlag' => 1,
-                'content'       => json_encode($contentArr),
-                "subCatalogId" =>  0,
+            'catalogId' => 138,
+            'catalog' => "社交娱乐", // 位于通知列表页面标题
+            'subCatalog' => "活动通知", // 打开通知后，顶部展示
+            "headFeed" => $fromFeedId,
+            'finishFlag' => 0,
+            'summary' => '',// // 位于通知列表页面标题下面的一行小字，点开通知后也有这个展示
+            'actionType' => 1,
+            'headFlag' => 1,
+            'content' => json_encode($contentArr),
+            "subCatalogId" => 0,
         );
         if (!isset($contentArr['url'])) {
             $imContent['actionType'] = 0;
@@ -583,7 +602,7 @@ class Fn {
      * @param int $total
      * @param int $perpage
      * @param int $page
-     * return string 
+     * return string
      * @author liweiwei
      */
     public static function getLimitStrAction($total, $perpage, $page)
@@ -591,15 +610,15 @@ class Fn {
         if (!$total || !$perpage) {
             return '';
         }
-            
-        $pages = ceil($total/$perpage);
+        
+        $pages = ceil($total / $perpage);
         if ($page > $pages) {
             $page = $pages;
         }
         if ($page < 1) {
             $page = 1;
         }
-        return "LIMIT ".($page-1)*$perpage.", $perpage";
+        return "LIMIT " . ($page - 1) * $perpage . ", $perpage";
     }
     
     /**
@@ -611,7 +630,8 @@ class Fn {
      * @param array|NULL $data
      * @return bool|mixed
      */
-    public static function getUserInfoByRedis($key,$redisSting,$mark,$indexTime=NULL, array $data=NULL) {
+    public static function getUserInfoByRedis($key, $redisSting, $mark, $indexTime = NULL, array $data = NULL)
+    {
         if (1 == $mark) {
             $result = RedisClient::instance($redisSting)->setex($key, $indexTime, serialize($data));
             
@@ -622,15 +642,17 @@ class Fn {
             }
             $result = unserialize($list);
         } else if (3 == $mark) {
-            $result = RedisClient::instance($redisSting)->expire($key,$indexTime);
+            $result = RedisClient::instance($redisSting)->expire($key, $indexTime);
         }
         return $result;
     }
+    
     /**
      * @param $seesion_id
      * @return mixed
      */
-    public static function getSessionByUser($seesion_id) {
+    public static function getSessionByUser($seesion_id)
+    {
         session_id($seesion_id);
         session_start();
         return $_SESSION;
@@ -650,7 +672,7 @@ class Fn {
     
     /**
      *  发通知的链接需要带上code信息，用此生成
-     * @param array $data: code中要包含的内容
+     * @param array $data : code中要包含的内容
      * @return string
      * @author liweiwei
      */
@@ -676,14 +698,16 @@ class Fn {
     {
         return Yaf_Registry::get('config')->get('site.info.staticurl');
     }
-
+    
     /**
      * 从配置文件中获取Server地址
      * @return mixed
      */
-    public static function getServerUrl() {
+    public static function getServerUrl()
+    {
         return Yaf_Registry::get('config')->get('site.info.url');
     }
+    
     /**
      * 生成通知的链接
      * @param int $entry 入口，3-活动详情 4-审核列表页面
@@ -693,7 +717,7 @@ class Fn {
      * @return string
      * @author liweiwei
      */
-    public static function generatePageUrl($entry, $acId=null, $codeData=null, $feedType=null)
+    public static function generatePageUrl($entry, $acId = null, $codeData = null, $feedType = null)
     {
         $url = Fn::getHtmlUrl();
         
@@ -709,10 +733,10 @@ class Fn {
         }
         if ($codeData) {
             // 交换visitor 和 owner
-            $paramArr[] = "code=".Fn::generateCode($codeData, $feedType=='g');
+            $paramArr[] = "code=" . Fn::generateCode($codeData, $feedType == 'g');
         }
         if (count($paramArr) > 0) {
-            return $url."?".implode('&', $paramArr);
+            return $url . "?" . implode('&', $paramArr);
         } else {
             return $url;
         }
@@ -724,26 +748,28 @@ class Fn {
      */
     public static function strToHex($string)//字符串转十六进制
     {
-        $hex="";
-        for($i=0;$i<strlen($string);$i++)
-            $hex.=dechex(ord($string[$i]));
-            $hex=strtoupper($hex);
-            return $hex;
-    }
-    /**
-    public static function hexToStr($hex)//十六进制转字符串
-    {
-        $string="";
-        for($i=0;$i<strlen($hex)-1;$i+=2)
-            $string.=chr(hexdec($hex[$i].$hex[$i+1]));
-        return  $string;
+        $hex = "";
+        for ($i = 0; $i < strlen($string); $i++)
+            $hex .= dechex(ord($string[$i]));
+        $hex = strtoupper($hex);
+        return $hex;
     }
     
     /**
+     * public static function hexToStr($hex)//十六进制转字符串
+     * {
+     * $string="";
+     * for($i=0;$i<strlen($hex)-1;$i+=2)
+     * $string.=chr(hexdec($hex[$i].$hex[$i+1]));
+     * return  $string;
+     * }
+     *
+     * /**
      * 获取userAgent
      * @return Ambigous <string, unknown>
      */
-    public static function getHttpUserAgent() {
+    public static function getHttpUserAgent()
+    {
         return isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : '';
     }
     
@@ -786,7 +812,7 @@ class Fn {
         }
         if (4 != $type) {
             $chars = str_shuffle($chars);
-            $str   = substr($chars, 0, $len);
+            $str = substr($chars, 0, $len);
         } else {
             // 中文随机字
             for ($i = 0; $i < $len; $i++) {
@@ -795,17 +821,18 @@ class Fn {
         }
         return $str;
     }
-
+    
     /**
      * 处理emoji表情转化
      * @param $str
      * @return string
      */
-    public static function emojitostr($str) {
-        $strEncode= '';
-        $length = mb_strlen($str,'utf-8');
-        for($i = 0;$i < $length;$i++) {
-            $_tmpStr = mb_substr($str,$i,1,'utf-8');
+    public static function emojitostr($str)
+    {
+        $strEncode = '';
+        $length = mb_strlen($str, 'utf-8');
+        for ($i = 0; $i < $length; $i++) {
+            $_tmpStr = mb_substr($str, $i, 1, 'utf-8');
             if (strlen($_tmpStr) >= 4) {
                 $strEncode .= '[[EMOJI]]';
             } else {
@@ -814,8 +841,9 @@ class Fn {
         }
         return $strEncode;
     }
+    
     /**
-     * 
+     *
      * @param 过滤字符串 $str
      */
     public static function filterString($str)
@@ -825,10 +853,10 @@ class Fn {
         }
         // PHP 5.4 之前 PHP 指令 magic_quotes_gpc 默认是 on， 实际上所有的 GET、POST 和 COOKIE 数据都用被 addslashes() 了。
         // 不要对已经被 magic_quotes_gpc 转义过的字符串使用 addslashes()，因为这样会导致双层转义。
-        if(PHP_VERSION >= 6 || !get_magic_quotes_gpc()) {
+        if (PHP_VERSION >= 6 || !get_magic_quotes_gpc()) {
             return addslashes($str);
         }
-    
+        
         return $str;
 //         return htmlspecialchars($str, ENT_QUOTES);
 //         return @mysql_escape_string($str);
@@ -847,7 +875,8 @@ class Fn {
      * @param $string
      * @return mixed
      */
-    public static function br2nl($string){
+    public static function br2nl($string)
+    {
         return preg_replace('/<br\\s*?\/??>/i', chr(13), $string);
     }
     
@@ -855,7 +884,8 @@ class Fn {
      * 获取评论点赞key和密钥
      * @return mixed
      */
-    public static function getCommentConfig() {
+    public static function getCommentConfig()
+    {
         $commentConfigs = Yaf_Registry::get('config')->get('site.info.comment')->toArray();
         if (!$commentConfigs) {
             return array();
@@ -867,7 +897,8 @@ class Fn {
      * 子应用配置
      * @return array
      */
-    public static function getAppChildConfig() {
+    public static function getAppChildConfig()
+    {
         $appConfigs = Yaf_Registry::get('config')->get('site.info.signature');
         if (!$appConfigs) {
             Fn::writeLog('Fn/getAppChildConfig:获取子应用配置失败');
@@ -888,11 +919,12 @@ class Fn {
      * @param $param
      * @return array|string
      */
-    public static function generateSignature($appType,$param) {
+    public static function generateSignature($appType, $param)
+    {
         
         $prefix = 'site.info.' . $appType;
         
-        if (! $toonConfig = Yaf_Registry::get('config')->get($prefix)) {
+        if (!$toonConfig = Yaf_Registry::get('config')->get($prefix)) {
             return array();
         }
         
@@ -900,16 +932,16 @@ class Fn {
         
         $appSecret = $authConfig['appSecret'];
         
-        unset($authConfig['appSecret'],$authConfig['feedApiUrl']);
+        unset($authConfig['appSecret'], $authConfig['feedApiUrl']);
         
         ksort($param);
         $combString = '';
         
         foreach ($param as $key => $val) {
-            $combString .= $key.$val;
+            $combString .= $key . $val;
         }
 //        echo $appSecret.$combString.$appSecret;die;
-        $authKey = strtoupper( md5( $appSecret.$combString.$appSecret ) );
+        $authKey = strtoupper(md5($appSecret . $combString . $appSecret));
         
         return $authKey;
     }
@@ -920,34 +952,37 @@ class Fn {
      * @param $param
      * @return array|string
      */
-    public static function generateShaiSignature($appType,$param) {
+    public static function generateShaiSignature($appType, $param)
+    {
         
-        if (! $toonConfig = Yaf_Registry::get('config')->get($appType)) {
+        if (!$toonConfig = Yaf_Registry::get('config')->get($appType)) {
             return array();
         }
         $authConfig = $toonConfig->toArray();
         
         $appSecret = $authConfig['appSecret'];
         
-        unset($authConfig['appSecret'],$authConfig['shaiUrl']);
+        unset($authConfig['appSecret'], $authConfig['shaiUrl']);
         ksort($param);
         $combString = '';
         
         foreach ($param as $key => $val) {
-            $combString .= $key.$val;
+            $combString .= $key . $val;
         }
         
-        $authKey = strtoupper( md5( $appSecret.$combString.$appSecret ) );
+        $authKey = strtoupper(md5($appSecret . $combString . $appSecret));
         
         return $authKey;
     }
+    
     /**
      * 对多位数组进行排序
      * @param $multi_array 数组
      * @param $sort_key需要传入的键名
      * @param $sort排序类型
      */
-    public static function multiArraySort($multi_array, $sort_key, $sort = SORT_DESC) {
+    public static function multiArraySort($multi_array, $sort_key, $sort = SORT_DESC)
+    {
         if (is_array($multi_array)) {
             foreach ($multi_array as $row_array) {
                 if (is_array($row_array)) {
@@ -961,5 +996,37 @@ class Fn {
         }
         array_multisort($key_array, $sort, $multi_array);
         return $multi_array;
+    }
+    
+    /**
+     * 校验数据
+     * @param $array
+     * @param $mark
+     * @return int
+     */
+    public static function judgeDataRow($array, $mark)
+    {
+        
+        if (empty($array)) {
+            return ResponseCode::NOT_EXIST;
+        }
+        
+        if (!is_array($array)) {
+            return ResponseCode::EXP_PARAM;
+        }
+        
+        if (1 == $mark) {
+            if (empty($array['visitor']['feed_id']) || empty($array['visitor']['user_id'])) {
+                return ResponseCode::EXP_PARAM;
+            }
+            if (isset($array['toon_type']) && 113 != $array['toon_type']) {
+                Fn::writeLog("user/checklogin:解析失败, 参考:getParams：" . json_encode($array));
+                return ResponseCode::EXP_PARAM;
+            }
+        } else if (2 == $mark) {
+            if (empty($array['userId']) || empty($array['toonUid']) || empty($array['schoolId'])) {
+                return ResponseCode::EXP_PARAM;
+            }
+        }
     }
 }
