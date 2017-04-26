@@ -287,7 +287,7 @@ class Fn
                 'message' => $message,
                 'timestamp' => self::getMillisecond(),
             ),
-            'data' => $data
+            'data' => $data ? $data : []
         );
         
         $msg = json_encode($msg);

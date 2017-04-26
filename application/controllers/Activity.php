@@ -30,7 +30,10 @@ class ActivityController extends Controller {
         // 活动类型
         $type = intval($this->request->getQuery('type', 0));
         $page = intval($this->request->getQuery('page',1));
-        
+        $ticket = Fn::filterString($this->request->getQuery('ticket',''));
+        if (empty($ticket)) {
+            Fn::outputToJson(ResponseCode::NOT_EXIST,'非法请求');
+        }
         // 当前时间，用于与开始时间等做比较，获取活动当前状态
         $time = time();
         // 每页活动多少条信息
@@ -105,7 +108,7 @@ class ActivityController extends Controller {
         $list['totalPage'] = $totalPage;
         $list['page'] = $page;
         
-        Fn::outputToJson(0, 'ok', $list);
+        Fn::outputToJson(ResponseCode::OK, 'ok', $list);
     }
     
     /**
@@ -114,16 +117,20 @@ class ActivityController extends Controller {
     public function getApplyUserInfoAction() {
         $post = file_get_contents('php://input');
         if (empty($post)) {
-            Fn::outputToJson(self::ERR_PARAM, '参数错误');
+            Fn::outputToJson(ResponseCode::NOT_EXIST, '参数错误');
         }
         
         $info = json_decode($post,true);
+        
+        if (empty($info['ticket'])) {
+            Fn::outputToJson(ResponseCode::NOT_EXIST,'非法请求');
+        }
         if (empty($info['ac_id'])) {
-            Fn::outputToJson(self::ERR_PARAM, '缺少活动ID');
+            Fn::outputToJson(ResponseCode::NOT_EXIST, '缺少活动ID');
         }
         
         if (empty($info['user_id'])) {
-            Fn::outputToJson(self::ERR_PARAM, '缺少用户ID');
+            Fn::outputToJson(ResponseCode::NOT_EXIST, '缺少用户ID');
         }
         $applyModel = new ApplyModel();
         $applyList = $applyModel->getApplyList("activity_id = {$info['ac_id']} AND status = 1 AND verify_status != 2 ","create_time DESC",0);
@@ -140,10 +147,10 @@ class ActivityController extends Controller {
         $applyStatus = User::isRepetitionByUserId($info['user_id'],$idStr);
         unset($idStr,$applyList,$tempUidArray);
         if (1 == $applyStatus) {
-            Fn::outputToJson(self::ERR_PARAM, '你已有其他名片报名此活动
+            Fn::outputToJson(ResponseCode::ERR_PARAM, '你已有其他名片报名此活动
 ');
         }
-        Fn::outputToJson(0,'ok',[]);
+        Fn::outputToJson(ResponseCode::OK,'ok');
     }
     /**
      * 存储活动信息
@@ -157,22 +164,24 @@ class ActivityController extends Controller {
             
         } else {
             Fn::writeLog('activity/addactivity: post值为空，参考：post:'.var_export($post,true));
-            Fn::outputToJson(self::ERR_PARAM, '参数错误');
+            Fn::outputToJson(ResponseCode::ERR_PARAM, '参数错误');
         }
-       
+        if (empty($post['ticket'])) {
+            Fn::outputToJson(ResponseCode::NOT_EXIST, '非法请求');
+        }
         if (!is_array($postArray)) {
             Fn::writeLog('activity/addactivity: !is_array，参考：post:'.var_export($postArray,true));
-            Fn::outputToJson(self::ERR_PARAM, '数据格式错误');
+            Fn::outputToJson(ResponseCode::ERR_PARAM, '数据格式错误');
         }
         if (empty($postArray['mark'])) {
             Fn::writeLog('activity/addactivity:  没有mark参考：post:'.var_export($postArray,true));
-            Fn::outputToJson(self::ERR_PARAM,'参数丢失');
+            Fn::outputToJson(ResponseCode::ERR_PARAM,'参数丢失');
         }
         
         
         if (!$postArray['user_id']) {
             Fn::writeLog('activity/addactivity:  缺少用户信息');
-            Fn::outputToJson(self::ERR_PARAM,'参数丢失');
+            Fn::outputToJson(ResponseCode::ERR_PARAM,'参数丢失');
         }
         $dataModel = new ActivityModel();
         $postArray['time'] = time();
@@ -185,16 +194,16 @@ class ActivityController extends Controller {
         } else { // 编辑
             $acDetail = $dataModel->getByAcInfoWithUuid($dealData['uuid']);
 
-            empty($acDetail) && Fn::outputToJson(self::ERR_PARAM, '该活动存在异常');
+            empty($acDetail) && Fn::outputToJson(ResponseCode::ERR_PARAM, '该活动存在异常');
             if ($dealData['user_id'] != $acDetail['user_id']) {
-                Fn::outputToJson(self::ERR_PARAM, '您无编辑该活动权限');
+                Fn::outputToJson(ResponseCode::ERR_PARAM, '您无编辑该活动权限');
             }
            
             $result = $dataModel->updateDataBase($dealData,$postArray['user_id']);
         }
 
         if ($result) {
-            Fn::outputToJson(0,'ok',$result);
+            Fn::outputToJson(ResponseCode::OK,'ok',$result);
         } else {
             Fn::outputToJson(-1,'发布活动失败',$result);
         }
@@ -209,11 +218,14 @@ class ActivityController extends Controller {
         
         $postData = file_get_contents('php://input');
         if (empty($postData)) {
-            Fn::outputToJson(self::ERR_PARAM,'缺少参数');
+            Fn::outputToJson(ResponseCode::NOT_EXIST,'缺少参数');
         }
         $info = json_decode($postData, true);//解析参数
         if (empty($info['ac_id']) || empty($info['user_id'])) {
-            Fn::outputToJson(self::ERR_PARAM,'缺少参数');
+            Fn::outputToJson(ResponseCode::NOT_EXIST,'缺少参数');
+        }
+        if (empty($info['ticket'])) {
+            Fn::outputToJson(ResponseCode::NOT_EXIST,'非法请求');
         }
         $ac_status = $mixstatus = '';
     
@@ -226,7 +238,7 @@ class ActivityController extends Controller {
         $user_id = intval($info['user_id']);
         if (!$user_id) {
             Fn::writeLog('activity/getAcInfoByUser !user_id，参考：post:'.json_encode($postData));
-            Fn::outputToJson(self::ERR_PARAM,'用户信息缺失');
+            Fn::outputToJson(ResponseCode::NOT_EXIST,'用户信息缺失');
         }
         $acInfo = $acExtInfo = $appInfo = $checkIn = array();
         //获取活动基本信息
@@ -378,7 +390,7 @@ class ActivityController extends Controller {
         
         unset($ac_status,$mixstatus);
         
-        Fn::outputToJson(0,'ok',$acInfo);
+        Fn::outputToJson(ResponseCode::OK,'ok',$acInfo);
     }
     
     
@@ -394,18 +406,18 @@ class ActivityController extends Controller {
         }
         if (empty($post)) {
             Fn::writeLog('activity/detail empty(post)，参考：post:'.json_encode($post));
-            Fn::outputToJson(self::ERR_PARAM, '参数错误');
+            Fn::outputToJson(ResponseCode::NOT_EXIST, '参数错误');
         }
         
         $info = json_decode($post, true);//解析参数
         if (!is_array($info)) {
             Fn::writeLog('activity/detail !is_array($info)，参考：post:'.json_encode($post));
-            Fn::outputToJson(self::ERR_PARAM,'数据格式错误');
+            Fn::outputToJson(ResponseCode::ERR_PARAM,'数据格式错误');
         }
         // 必填参数验证
         if (empty($info['ac_id']) || empty($info['user_id'])) {
             Fn::writeLog('activity/detail !ac_id || !user_id, 参考：post:'.json_encode($post));
-            Fn::outputToJson(self::ERR_PARAM,'参数错误');
+            Fn::outputToJson(ResponseCode::NOT_EXIST,'活动ID/用户ID缺失');
         }
 
         //用于判断身份验证
@@ -413,7 +425,7 @@ class ActivityController extends Controller {
         $userInfo = User::getUserDetail($uid);
         if (!$userInfo['userId']) {
             Fn::writeLog('activity/detail !user_id，参考：post:'.json_encode($post));
-            Fn::outputToJson(self::ERR_PARAM,'用户信息缺失');
+            Fn::outputToJson(ResponseCode::NOT_EXIST,'用户信息缺失');
         }
 
         $acModel    = new ActivityModel();
@@ -526,7 +538,7 @@ class ActivityController extends Controller {
                 $mixstatus = 11; // 编辑
             }
             $result['mixstatus']  = $mixstatus;
-            Fn::outputToJson('0', 'ok', $result);
+            Fn::outputToJson(ResponseCode::OK, 'ok', $result);
         }
         
 
@@ -539,14 +551,14 @@ class ActivityController extends Controller {
                 $mixstatus = -1;
             }
             $result['mixstatus']  = $mixstatus;
-            Fn::outputToJson('0', 'ok', $result);
+            Fn::outputToJson(ResponseCode::OK, 'ok', $result);
         } 
         
         // 未结束，但是未开启报名的情况
         if (!($switch_status & 1)) {
             $mixstatus = 0;
             $result['mixstatus']  = $mixstatus;
-            Fn::outputToJson('0', 'ok', $result);
+            Fn::outputToJson(ResponseCode::OK, 'ok', $result);
         }
         
         // 活动未结束，开启报名的情况
@@ -642,7 +654,7 @@ class ActivityController extends Controller {
        
         $result['mixstatus']  = $mixstatus;
         //Fn::writeLog("活动详情页状态：".var_export($result,true));
-        Fn::outputToJson('0', 'ok', $result);
+        Fn::outputToJson(ResponseCode::OK, 'ok', $result);
     }
     
     /**
@@ -653,7 +665,7 @@ class ActivityController extends Controller {
         $getParams = $this->request->getQuery();
         if (empty($getParams) || empty($getParams['user_id'])) {
             Fn::writeLog('activity/getMyApplyList ，参考：getParams:'.json_encode($getParams));
-            Fn::outputToJson(self::ERR_PARAM,'参数错误');
+            Fn::outputToJson(ResponseCode::NOT_EXIST,'参数错误');
         }
         
         //身份验证
@@ -661,7 +673,7 @@ class ActivityController extends Controller {
         $userInfo = User::getUserDetail(intval($getParams['user_id']));
         if (empty($userInfo) || empty($userInfo['userId'])) {
             Fn::writeLog('activity/getMyApplyList !user_id，参考：userInfo:'.json_encode($userInfo));
-            Fn::outputToJson(self::ERR_PARAM,'用户信息缺失');
+            Fn::outputToJson(ResponseCode::NOT_EXIST,'用户信息缺失');
             
         }
         $uid = intval($userInfo['userId']);
@@ -674,7 +686,7 @@ class ActivityController extends Controller {
         $mark = 2;
         $listResult = $listModel->getMyListData($uid, $mark, $offset, $limit);
         if (empty($listResult)) {
-            Fn::outputToJson(0,'ok',[]);
+            Fn::outputToJson(ResponseCode::OK,'ok');
         }
         
         $status = '';
@@ -742,7 +754,7 @@ class ActivityController extends Controller {
             $listResult[$key]['status'] = $ac_status;
         }
         
-        Fn::outputToJson(0, 'ok', $listResult);
+        Fn::outputToJson(ResponseCode::OK, 'ok', $listResult);
 
     }
     
@@ -755,6 +767,9 @@ class ActivityController extends Controller {
         if (empty($getParams)|| empty($getParams['user_id'])) {
             Fn::writeLog('activity/getMyPubList ，参考：getParams:'.json_encode($getParams));
             Fn::outputToJson(self::ERR_PARAM,'参数错误');
+        }
+        if (empty($getParams['ticket'])) {
+            Fn::outputToJson(ResponseCode::NOT_EXIST,'非法请求');
         }
         // 用户验证
         $userInfo = User::getUserDetail(intval($getParams['user_id']));
@@ -970,7 +985,7 @@ class ActivityController extends Controller {
     public function checkPostData(array $post) {
         
         if (!is_array($post)) {
-            Fn::outputToJson(self::ERR_PARAM,'数据格式错误');
+            Fn::outputToJson(ResponseCode::ERR_PARAM,'数据格式错误');
         }
         
         if (2 == $post['mark']) {
@@ -980,61 +995,61 @@ class ActivityController extends Controller {
 
         //获取当前用户
         $userInfo = User::getUserDetail($post['user_id']);
-        
+        $userInfo = User::getUserByTicket($post['ticket']);
         if (!$userInfo) {
             Fn::writeLog("activity:checkpost:".var_export($userInfo,true));
             
-            Fn::outputToJson(self::ERR_PARAM,'校验用户信息失败');
+            Fn::outputToJson(ResponseCode::ERR_PARAM,'校验用户信息失败');
         }
         //创建时间
         $post['create_time'] = time();
 
         // mark验证--用于区分目前操作是新增还是编辑
-        empty($post['mark']) && Fn::outputToJson(self::ERR_PARAM,'缺少必要参数');
+        empty($post['mark']) && Fn::outputToJson(ResponseCode::NOT_EXIST,'缺少必要参数');
         if (empty($post['school_id'])) {
-            Fn::outputToJson(self::ERR_PARAM,'缺少学校信息');
+            Fn::outputToJson(ResponseCode::NOT_EXIST,'缺少学校信息');
         }
         // title验证
         $post['title'] = Fn::filterString(trim($post['title']));
-        empty($post['title']) && Fn::outputToJson(self::ERR_PARAM,'请填写标题');
-        strlen($post['title']) > 90 && Fn::outputToJson(self::ERR_PARAM,'标题长度过长');
+        empty($post['title']) && Fn::outputToJson(ResponseCode::NOT_EXIST,'请填写标题');
+        strlen($post['title']) > 90 && Fn::outputToJson(ResponseCode::ERR_PARAM,'标题长度过长');
         
         // 海报处理
         if($post['img']['url'] && is_string($post['img']['url'])) {
             $post['img'] = json_encode($post['img']);
         } else {
             Fn::writeLog("acitivity/checkpostdata 海报数据错误：".json_encode($post));
-            Fn::outputToJson(self::ERR_PARAM,'海报数据异常');
+            Fn::outputToJson(ResponseCode::ERR_PARAM,'海报数据异常');
         }
 
         //活动类型 0娱乐 1兴趣  2户外   3展览  4演出  5会议 6运动 7-沙龙
         $post['type']  = empty($post['type']) ? 0 : intval( $post['type'] );
         if (!in_array($post['type'], array(0,1,2,3,4,5,6,7))) {
-            Fn::outputToJson(self::ERR_PARAM,'请选择活动类型');
+            Fn::outputToJson(ResponseCode::ERR_PARAM,'请选择活动类型');
         }
         //开始时间和结束时间的判断
         if (empty($post['start_time']) || empty($post['end_time'])) {
-            Fn::outputToJson(self::ERR_PARAM,'请正确填写开始时间或者结束时间');
+            Fn::outputToJson(ResponseCode::NOT_EXIST,'请正确填写开始时间或者结束时间');
         }
         if ($post['start_time'] <= $post['time']) {
-            Fn::outputToJson(self::ERR_PARAM,'开始时间不早于当前时间');
+            Fn::outputToJson(ResponseCode::ERR_PARAM,'开始时间不早于当前时间');
         }
         if ($post['end_time'] <= $post['start_time']) {
-            Fn::outputToJson(self::ERR_PARAM,'结束时间不早于开始时间');
+            Fn::outputToJson(ResponseCode::ERR_PARAM,'结束时间不早于开始时间');
         }
         //是否是群组
         $post['isgroup'] = empty($post['isgroup']) ? 0 : $post['isgroup'];
         
         //活动地点
         $post['locate'] = Fn::filterString(trim($post['locate']));
-        empty($post['locate']) && Fn::outputToJson(self::ERR_PARAM,'请填写活动地点');
+        empty($post['locate']) && Fn::outputToJson(ResponseCode::NOT_EXIST,'请填写活动地点');
         $post['address'] = $post['address'] ? Fn::filterString(trim($post['address'])) : '';
         //验证发起方联系方式
         $post['tel'] = isset($post['tel']) ? $post['tel'] : 0;
 
         //活动描述
         if (Fn::getStrLen($post['description']) < 10) {
-            Fn::outputToJson(self::ERR_PARAM,"文字描述至少10个字。");
+            Fn::outputToJson(ResponseCode::ERR_PARAM,"文字描述至少10个字。");
         }
         $post['description'] =  Fn::filterString(Fn::nl2br($post['description']));
         
@@ -1074,25 +1089,25 @@ class ActivityController extends Controller {
         
         $post['price'] = empty($post['price']) ? 0.00 : $post['price'];
         if ($post['price'] < 0) {
-            Fn::outputToJson(self::ERR_PARAM,"请正确填写金额数");
+            Fn::outputToJson(ResponseCode::ERR_PARAM,"请正确填写金额数");
         }
         if ($post['price'] > 9999) {
-            Fn::outputToJson(self::ERR_PARAM,"所填写金额不应超过9999");
+            Fn::outputToJson(ResponseCode::ERR_PARAM,"所填写金额不应超过9999");
         }
         
         //开启报名模式下而进行的判断
         if (1 == $post['allow_apply']) {
             $post['max'] = !empty($post['max']) ? intval($post['max']) : 0;
-            $post['max'] < 0 && Fn::outputToJson(self::ERR_PARAM,'请正确输入人数');
-            $post['max'] > 100000 && Fn::outputToJson(self::ERR_PARAM,'请保持人数在100000内');
+            $post['max'] < 0 && Fn::outputToJson(ResponseCode::ERR_PARAM,'请正确输入人数');
+            $post['max'] > 100000 && Fn::outputToJson(ResponseCode::ERR_PARAM,'请保持人数在100000内');
             //报名截止时间
-            empty($post['apply_end_time']) && Fn::outputToJson(self::ERR_PARAM,'报名截止时间不能为空');
+            empty($post['apply_end_time']) && Fn::outputToJson(ResponseCode::NOT_EXIST,'报名截止时间不能为空');
             
             if ($post['apply_end_time'] > $post['start_time']) {
-                Fn::outputToJson(self::ERR_PARAM,'报名截止时间不晚于活动开始时间');
+                Fn::outputToJson(ResponseCode::ERR_PARAM,'报名截止时间不晚于活动开始时间');
             }
     
-            empty($post['custom_field']) && Fn::outputToJson(self::ERR_PARAM,'自定义字段不能为空');
+            empty($post['custom_field']) && Fn::outputToJson(ResponseCode::NOT_EXIST,'自定义字段不能为空');
             
 //            $post['price'] = empty($post['price']) ? 0.00 : $post['price'];
 //            if ($post['price'] < 0) {
