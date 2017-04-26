@@ -19,7 +19,7 @@ class IndexController extends Controller {
         echo '---';
         $getParams = $this->getRequest()->getQuery('r');
         var_dump($getParams);
-        echo 'activity-index';
+        echo 'catom-index';
     }
     
     

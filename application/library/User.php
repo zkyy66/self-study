@@ -12,6 +12,45 @@ class User {
     private static $_resquestApi;
     
     /**
+     * 根据Ticket获取用户详细信息
+     */
+    public static function getUserByTicket ($string) {
+        
+        if (empty($string)) {
+            return false;
+        }
+        $ticketInfo = Act_Ticket::getContentByTicket($string);
+        
+        if (!$ticketInfo) {
+            Fn::writeLog("User/getUserByTicket:非法请求");
+            return false;
+        }
+        
+        $userDetail = self::getUserDetail($ticketInfo['userId']);
+        
+        if (!$userDetail || empty($userDetail['userId'])) {
+            Fn::writeLog("User/getUserByTicket:获取用户详情信息失败");
+            return false;
+        }
+        if (!is_array($userDetail)) {
+            Fn::writeLog("User/getUserByTicket:返回数据格式错误");
+            return false;
+        }
+        $userData = array(
+            'feed_id' => $userDetail['feedId'],
+            'title' => $userDetail['name'],
+            'subtitle' => $userDetail['subtitle'],
+            'avatarId' => $userDetail['avatar'],
+            'user_id' => $userDetail['userId'],
+            'toon_uid' => $userDetail['toon_uid'],
+            'u_no' => $userDetail['cardNo'],
+            'toon_type' => $userDetail['toon_type'],
+            'school_id' => $userDetail['school_id'],
+            'school_name' => $userDetail['school']['name']
+        );
+        return $userData;
+    }
+    /**
      * 获取子应用配置
      * @param $plugin
      * @return array
