@@ -154,7 +154,7 @@ class UserController extends Controller
         if (empty($generateTicket)) {
             Fn::outputToJson(ResponseCode::EXP_PARAM, '生成校验信息失败', []);
         }
-        echo $generateTicket;die;
+
         unset($errNum, $errUserNum, $resultArray, $userInfo, $getLoginUserInfo);
         return $generateTicket;
     }
