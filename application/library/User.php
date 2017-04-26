@@ -36,6 +36,7 @@ class User {
             Fn::writeLog("User/getUserByTicket:返回数据格式错误");
             return false;
         }
+        
         $userData = array(
             'feed_id' => $userDetail['feedId'],
             'title' => $userDetail['name'],
@@ -44,7 +45,6 @@ class User {
             'user_id' => $userDetail['userId'],
             'toon_uid' => $userDetail['toon_uid'],
             'u_no' => $userDetail['cardNo'],
-            'toon_type' => $userDetail['toon_type'],
             'school_id' => $userDetail['school_id'],
             'school_name' => $userDetail['school']['name']
         );

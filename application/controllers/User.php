@@ -154,7 +154,7 @@ class UserController extends Controller
         if (empty($generateTicket)) {
             Fn::outputToJson(ResponseCode::EXP_PARAM, '生成校验信息失败', []);
         }
-        
+        echo $generateTicket;die;
         unset($errNum, $errUserNum, $resultArray, $userInfo, $getLoginUserInfo);
         return $generateTicket;
     }
@@ -163,7 +163,7 @@ class UserController extends Controller
      * 根据凭证获取用户详情
      * @return array|bool
      */
-    public function getUserDetailByTicket()
+    public function getUserDetailByTicketAction()
     {
         $ticket = '';
         $ticket = Fn::filterString($this->request->getQuery('ticket', ''));
@@ -172,6 +172,7 @@ class UserController extends Controller
             Fn::outputToJson(ResponseCode::NOT_EXIST, '获取用户校验凭证失败', []);
         }
         $userDetail = User::getUserByTicket($ticket);
+       
         return $userDetail;
     }
 }
