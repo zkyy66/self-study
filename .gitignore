@@ -3,3 +3,5 @@
 public/html
 .project
 .buildpath
+
+/vendor/

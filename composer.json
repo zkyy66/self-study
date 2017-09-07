@@ -1,0 +1,20 @@
+{
+    "name": "zkyy66/self-study",
+    "description": "yaf framework",
+    "type": "project",
+    "license": "Apache2.0",
+    "authors": [
+        {
+            "name": "yaoyuan",
+            "email": "yaoyuan@syswin.com"
+        }
+    ],
+    "minimum-stability": "stable",
+    "require": {
+        "autoload" :{
+            "psr-4":{
+               "Student\\": "/"
+            }
+        }
+    }
+}
