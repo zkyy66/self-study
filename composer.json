@@ -10,11 +10,11 @@
         }
     ],
     "minimum-stability": "stable",
-    "require": {
-        "autoload" :{
-            "psr-4":{
-               "Student\\": "/"
-            }
-        }
-    }
+    // "require": {
+    //     "autoload" :{
+    //         "psr-4":{
+    //            "Student\\": "/"
+    //         }
+    //     }
+    // }
 }
