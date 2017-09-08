@@ -1,14 +1,14 @@
 {
     "name": "zkyy66/self-study",
-    "description": "yaf framework",
-    "type": "project",
-    "license": "Apache2.0",
+    "description": "yaf-php",
+    "type": "library",
+    "license": "Apache 2.0",
     "authors": [
         {
             "name": "yaoyuan",
             "email": "yaoyuan@syswin.com"
         }
     ],
-    "minimum-stability": "v1.0.0",
+    "minimum-stability": "dev",
     "require": {}
 }
